@@ -5,11 +5,11 @@
 **Working Mechanism**: Creates the core structures that store User Identities, Support Tickets, Scholarship criteria, and Facility attributes.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 4.
-- [ ] Execute Core Task: Map out entity relationships (e.g., tying Student Profiles to Ticket ID arrays).
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 4.
+- `[x]` Execute Core Task: Map out entity relationships (e.g., tying Student Profiles to Ticket ID arrays).
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

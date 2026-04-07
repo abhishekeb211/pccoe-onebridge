@@ -55,12 +55,16 @@ async def check_health():
     })
 
 from pydantic import BaseModel
-# Included from Phase 13/14
-# Note: we import it conditionally or expect it's available locally
+# Included from Phase 13/14/15/16
 try:
     from local_agent import local_agent
 except ImportError:
     local_agent = None
+
+try:
+    from llm_gateway import llm_gateway
+except ImportError:
+    llm_gateway = None
 
 class TicketSubmission(BaseModel):
     description: str
@@ -81,8 +85,15 @@ async def submit_ticket(payload: TicketSubmission):
 
 @app.get("/api/v1/opportunities/matches", tags=["Module C/D/E: AI Match Engines"])
 async def mock_fetch_matches():
-    # Will proxy OpenRouter requests via PrivacySanitizer in later phases
-    return {"message": "Endpoint Scaffolded"}
+    """
+    Hooking to Gemini Gateway (Phase 15/16 checks).
+    In real scale, we'd pass the specific user criteria.
+    """
+    if llm_gateway:
+        # Example validation run 
+        # return await llm_gateway.generate_response("You are an educational assistant", "Match me scholarships")
+        return {"message": "Gemini Gateway connected securely."}
+    return {"message": "AI Endpoint Offline."}
 
 @app.post("/api/v1/eoc/secure-grievance", tags=["EOC Integration"])
 async def mock_eoc_grievance():

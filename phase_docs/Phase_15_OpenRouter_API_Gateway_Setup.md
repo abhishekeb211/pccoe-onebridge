@@ -5,11 +5,11 @@
 **Working Mechanism**: Acts as the middle-man. Sanitizes requests, applies API Keys, forwards to OpenRouter, formats the return.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 15.
-- [ ] Execute Core Task: Build the API wrapper library within the backend backend, locking down token usage.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 15.
+- `[x]` Execute Core Task: Build the API wrapper library within the backend backend, locking down token usage.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

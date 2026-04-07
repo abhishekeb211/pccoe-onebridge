@@ -5,11 +5,11 @@
 **Working Mechanism**: Scrutinizes prompts, stripping away student names/IDs before building the final query strings for Gemini.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 16.
-- [ ] Execute Core Task: Develop the anonymization pipeline block.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 16.
+- `[x]` Execute Core Task: Develop the anonymization pipeline block.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

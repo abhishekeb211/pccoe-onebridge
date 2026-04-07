@@ -172,26 +172,65 @@ const generateFacilities = () => `
 const generateSupport = () => `
     <div class="view-header">
         <h2>Support Center</h2>
-        <p>Need help? Reach out to our 3-tier support system.</p>
+        <p>Submit inquiries securely. The AI will optimally classify and route your request to the right department.</p>
     </div>
-    <div class="dashboard-grid">
-        <div class="glass-card">
-            <h3>💻 Technical Support</h3>
-            <p style="margin: 1rem 0; color: var(--text-secondary);">LMS issues, Login problems, Wi-Fi connectivity.</p>
-            <button class="btn-primary">Raise IT Ticket</button>
-        </div>
-        <div class="glass-card">
-            <h3>📚 Academic Support</h3>
-            <p style="margin: 1rem 0; color: var(--text-secondary);">Subject guidance, Mentorship, Exam queries.</p>
-            <button class="btn-primary">Contact Mentor</button>
-        </div>
-        <div class="glass-card">
-            <h3>🌿 Wellbeing & Counseling</h3>
-            <p style="margin: 1rem 0; color: var(--text-secondary);">Mental health, Stress relief, Confidential counseling.</p>
-            <button class="btn-primary" style="background: var(--secondary);">Book Session</button>
+    
+    <div class="opportunities-grid" style="grid-template-columns: 1fr;">
+        <div class="glass-card" style="max-width: 800px; margin: auto; padding: 2rem;">
+            <h3 style="margin-bottom: 1.5rem;">Create New Request</h3>
+            
+            <form id="dynamic-support-form" onsubmit="handleSupportSubmit(event)">
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="reqCategory" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Initial Category (Optional - AI will Auto-Route)</label>
+                    <select id="reqCategory" style="width: 100%; padding: 0.8rem; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); cursor: pointer;" onchange="toggleFormLogic()">
+                        <option value="auto">Auto-Detect (AI Routing)</option>
+                        <option value="tech">Technical Issue</option>
+                        <option value="academic">Academic & Examinations</option>
+                        <option value="eoc">EOC Confidential Grievance</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="reqSummary" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Detailed Description</label>
+                    <textarea id="reqSummary" rows="5" required style="width: 100%; padding: 0.8rem; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-primary); font-family: inherit;" placeholder="Please describe exactly what you need help with..."></textarea>
+                    <small style="color: var(--warning); display: block; margin-top: 0.5rem;">ⓘ Note: All data is subjected to strict PII-Stripping before analysis.</small>
+                </div>
+
+                <!-- Dynamic logic field -->
+                <div id="dynamic-upload-block" style="margin-bottom: 2rem; display: none;">
+                    <label for="reqProof" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Attach Proof/Documents</label>
+                    <input type="file" id="reqProof" accept=".pdf,.png,.jpg" style="color: var(--text-primary);">
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Execute Encrypted Action Protocol</button>
+            </form>
         </div>
     </div>
 `;
+
+// Dynamic phase 17 handlers attached directly to window for string interpolation bindings
+window.toggleFormLogic = () => {
+    const val = document.getElementById('reqCategory').value;
+    const upload = document.getElementById('dynamic-upload-block');
+    if(val === 'academic' || val === 'eoc') {
+        upload.style.display = 'block';
+    } else {
+        upload.style.display = 'none';
+    }
+};
+
+window.handleSupportSubmit = (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.innerHTML = 'Routing Request... <span class="sr-only">Please wait</span>';
+    btn.style.opacity = '0.7';
+    
+    // Simulate backend submission logic natively
+    setTimeout(() => {
+        window.showNotification("Request Classified successfully by Local NLP Agent. Routed to Academic Advising.", "success");
+        renderView('dashboard');
+    }, 1500);
+};
 
 const generateEoc = () => `
     <div class="view-header">

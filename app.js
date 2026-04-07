@@ -215,7 +215,14 @@ const renderView = (route) => {
             case 'opportunities': content = generateOpportunities(); break;
             case 'facilities': content = generateFacilities(); break;
             case 'support': content = generateSupport(); break;
-            case 'eoc': content = generateEoc(); break;
+            case 'eoc': 
+                // RBAC Protection on front end
+                if(GlobalState.user.roles.includes("eoc_admin") || GlobalState.user.needsEOC) {
+                     content = generateEoc(); 
+                } else {
+                     content = `<h2>Access Denied</h2><p>You do not have EOC Portal permissions.</p>`;
+                }
+                break;
             default: content = generateDashboard();
         }
         
@@ -235,8 +242,15 @@ const renderView = (route) => {
         root.style.opacity = 1;
         root.setAttribute('aria-busy', 'false');
         
-        // Active states
+        // Active states & RBAC Nav Cleanup
         navItems.forEach(btn => {
+            // Hide specific nav items based on explicit roles
+            if (btn.dataset.route === 'eoc' && !GlobalState.user.roles.includes("eoc_admin") && !GlobalState.user.needsEOC) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'block';
+            }
+
             if(btn.dataset.route === route) {
                 btn.classList.add('active');
                 btn.setAttribute('aria-current', 'page');

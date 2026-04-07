@@ -5,11 +5,11 @@
 **Working Mechanism**: Distinguishes inputs handled by the Local Agent (privacy-first) versus external outputs required from Gemini via OpenRouter.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 3.
-- [ ] Execute Core Task: Finalize API limits, data anonymization rules before LLM querying, and local NLP model selections.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 3.
+- `[x]` Execute Core Task: Finalize API limits, data anonymization rules before LLM querying, and local NLP model selections.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

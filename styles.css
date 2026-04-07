@@ -41,6 +41,18 @@
     --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Base Accessibility Classes */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -318,6 +330,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Accessibility Focus States */
 *:focus-visible {
-    outline: 3px solid var(--eoc-brand-light);
+    outline: 3px solid var(--eoc-brand-light) !important;
     outline-offset: 3px;
 }

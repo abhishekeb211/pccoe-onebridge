@@ -1,9 +1,41 @@
-/**
- * PCCOE OneBridge - Application Logic
- * Simulates a SPA with Vanilla JS and pure DOM manipulation
+/* 
+ * PCCOE OneBridge - Core Frontend Architecture
+ * Formal SPA Base, Layout Wrappers & Global State Manager
  */
 
-// --- Mock Data ---
+// --- Global State Store ---
+const GlobalState = {
+    user: {
+        name: "Jane Smith",
+        year: "3rd Year",
+        branch: "Computer Engineering",
+        roles: ["student"],
+        needsEOC: true
+    },
+    ui: {
+        currentRoute: "dashboard",
+        highContrastMode: false
+    },
+    listeners: [],
+    
+    // Subscribe to state mutations
+    subscribe(callback) {
+        this.listeners.push(callback);
+    },
+    
+    // Dispatch mutations
+    setState(newState) {
+        this.ui = { ...this.ui, ...newState.ui };
+        this.user = { ...this.user, ...newState.user };
+        this.notify();
+    },
+    
+    notify() {
+        this.listeners.forEach(fn => fn(this));
+    }
+};
+
+// --- Mock Data Layer ---
 const userData = {
     name: "Jane Smith",
     year: "3rd Year",
@@ -159,40 +191,68 @@ const generateEoc = () => `
     </div>
 `;
 
-// --- SPA Router logic ---
+// --- Layout Wrapper & SPA Core Engine ---
 
 const root = document.getElementById('app-root');
 const navItems = document.querySelectorAll('.nav-item');
 
+// Live region for screen readers notifying route changes
+const routeAnnouncer = document.createElement('div');
+routeAnnouncer.setAttribute('aria-live', 'assertive');
+routeAnnouncer.className = 'sr-only';
+document.body.appendChild(routeAnnouncer);
+
 const renderView = (route) => {
-    // Fade out
+    // Standard Layout Wrapper Fade Out Focus
     root.style.opacity = 0;
+    root.setAttribute('aria-busy', 'true');
     
     setTimeout(() => {
+        let content = '';
         switch(route) {
-            case 'dashboard': root.innerHTML = generateDashboard(); break;
-            case 'opportunities': root.innerHTML = generateOpportunities(); break;
-            case 'facilities': root.innerHTML = generateFacilities(); break;
-            case 'support': root.innerHTML = generateSupport(); break;
-            case 'eoc': root.innerHTML = generateEoc(); break;
-            default: root.innerHTML = generateDashboard();
+            case 'dashboard': content = generateDashboard(); break;
+            case 'opportunities': content = generateOpportunities(); break;
+            case 'facilities': content = generateFacilities(); break;
+            case 'support': content = generateSupport(); break;
+            case 'eoc': content = generateEoc(); break;
+            default: content = generateDashboard();
         }
         
-        // Fade in
-        root.style.opacity = 1;
+        // Inject layout with a standard screen shell template
+        root.innerHTML = `
+            <section class="module-wrapper" role="region" aria-label="${route} view">
+                ${content}
+            </section>
+        `;
         
-        // Update Nav Active State
+        // SPA UI Updates
+        GlobalState.setState({ ui: { currentRoute: route } });
+        
+        // Notify screen readers
+        routeAnnouncer.textContent = `Navigated to ${route.replace('-', ' ')} view`;
+        
+        root.style.opacity = 1;
+        root.setAttribute('aria-busy', 'false');
+        
+        // Active states
         navItems.forEach(btn => {
             if(btn.dataset.route === route) {
                 btn.classList.add('active');
+                btn.setAttribute('aria-current', 'page');
             } else {
                 btn.classList.remove('active');
+                btn.removeAttribute('aria-current');
             }
         });
-    }, 200); // match CSS transition
+    }, 200); 
 };
 
-// Event Listeners
+// Listen to Global State events if needed globally
+GlobalState.subscribe((state) => {
+    console.log(`[SPA Core] Router State Mutated: ${state.ui.currentRoute}`);
+});
+
+// Event Binding
 navItems.forEach(btn => {
     btn.addEventListener('click', (e) => {
         const route = e.target.dataset.route;
@@ -200,8 +260,9 @@ navItems.forEach(btn => {
     });
 });
 
-// Initialization
+// Formal App Initialization
 document.addEventListener('DOMContentLoaded', () => {
-    root.style.transition = 'opacity 0.2s ease-in-out';
-    renderView('dashboard');
+    root.style.transition = 'opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+    renderView(GlobalState.ui.currentRoute);
 });
+

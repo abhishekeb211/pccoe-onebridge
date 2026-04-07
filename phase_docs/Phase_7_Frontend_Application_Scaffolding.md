@@ -5,11 +5,11 @@
 **Working Mechanism**: The shell that loads the global layout, navigation states, and global CSS design tokens.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 7.
-- [ ] Execute Core Task: Set up base SPA patterns, global state stores, and standard screen layout wrappers.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 7.
+- `[x]` Execute Core Task: Set up base SPA patterns, global state stores, and standard screen layout wrappers.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

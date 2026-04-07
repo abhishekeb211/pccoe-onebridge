@@ -5,11 +5,11 @@
 **Working Mechanism**: Houses all the primary routing logic, listening for requests from the platform front-end.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 6.
-- [ ] Execute Core Task: Configure the core API frameworks (e.g., Express or FastAPI), health-check endpoints, and CORS policies.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 6.
+- `[x]` Execute Core Task: Configure the core API frameworks (e.g., Express or FastAPI), health-check endpoints, and CORS policies.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

@@ -14,7 +14,8 @@ const GlobalState = {
     },
     ui: {
         currentRoute: "dashboard",
-        highContrastMode: false
+        highContrastMode: false,
+        largeFontMode: false
     },
     listeners: [],
     
@@ -258,6 +259,50 @@ navItems.forEach(btn => {
         const route = e.target.dataset.route;
         renderView(route);
     });
+});
+
+// --- Phase 8: Accessibility Handlers ---
+const accFab = document.querySelector('.accessibility-fab');
+
+// Sync global state to body CSS
+GlobalState.subscribe((state) => {
+    if (state.ui.highContrastMode) {
+        document.body.classList.add('high-contrast');
+    } else {
+        document.body.classList.remove('high-contrast');
+    }
+
+    if (state.ui.largeFontMode) {
+        document.body.classList.add('large-font');
+    } else {
+        document.body.classList.remove('large-font');
+    }
+});
+
+// Toggle via FAB click
+if (accFab) {
+    accFab.addEventListener('click', () => {
+        const isVip = !GlobalState.ui.highContrastMode;
+        GlobalState.setState({ ui: { highContrastMode: isVip, largeFontMode: isVip } });
+        // Announce change
+        routeAnnouncer.textContent = `Accessibility mode ${isVip ? 'enabled' : 'disabled'}`;
+    });
+}
+
+// Global Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+    // Alt + H for high contrast
+    if (e.altKey && e.key.toLowerCase() === 'h') {
+        const toggle = !GlobalState.ui.highContrastMode;
+        GlobalState.setState({ ui: { highContrastMode: toggle } });
+        routeAnnouncer.textContent = `High contrast mode ${toggle ? 'enabled' : 'disabled'}`;
+    }
+    // Alt + F for focal font sizing
+    if (e.altKey && e.key.toLowerCase() === 'f') {
+        const toggle = !GlobalState.ui.largeFontMode;
+        GlobalState.setState({ ui: { largeFontMode: toggle } });
+        routeAnnouncer.textContent = `Large font mode ${toggle ? 'enabled' : 'disabled'}`;
+    }
 });
 
 // Formal App Initialization

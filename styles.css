@@ -30,6 +30,7 @@
     /* Typography */
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
+    --base-font-size: 16px;
 
     /* Standardized Shadows */
     --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
@@ -39,6 +40,28 @@
     /* Transitions */
     --transition-fast: 0.2s ease-in-out;
     --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* WCAG 2.1 High Contrast Overrides */
+body.high-contrast {
+    --primary: #FFFF00;        /* Pure Yellow */
+    --primary-light: #FFFFFF;
+    --primary-dark: #FFFF00;
+    
+    --secondary: #00FF00;      /* Pure Green */
+    --accent: #FF0000;         /* Pure Red */
+    --warning: #FF8800;        
+    
+    --eoc-brand: #00FFFF;      /* Pure Cyan */
+    --eoc-brand-light: #FFFFFF;
+
+    --bg-base: #000000;        /* Pure Black */
+    --bg-surface: #000000;     
+    --text-primary: #FFFFFF;   /* Pure White */
+    --text-secondary: #FFFF00; 
+
+    --glass-bg: #000000;
+    --glass-border: #FFFFFF;
 }
 
 /* Base Accessibility Classes */
@@ -66,7 +89,11 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     min-height: 100vh;
-    font-size: 16px;
+    font-size: var(--base-font-size);
+}
+
+body.large-font {
+    --base-font-size: 22px;
 }
 
 /* Background Gradients to look alive */

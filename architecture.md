@@ -1,100 +1,113 @@
-# Technical Architecture: PCCOE OneBridge
+# Technical Architecture: PCCOE OneBridge (Phase 2 Update)
 
-This document outlines the technical architecture of the **PCCOE OneBridge** platform. It expands on the conceptual implementation by defining the technical systems, the agentic AI layer, and how the various software modules will be built.
+## 1. System Overview & Traffic Flow Blueprint
 
-## 1. System Overview
+This document standardizes the exact Data Flow Diagrams (DFD) and Unified Modeling Language (UML) Sequence logic dictating how PCCOE OneBridge securely manages traffic between the DOM (Front-End), the core API gateway, the private internal resources, and the external LLM cloud networks.
 
-The platform uses a hybrid AI architecture combined with a sleek, modern front-end. The core value of the platform is driven by two AI components working together: 
-1. A **Local AI Agent** processing fast, privacy-focused tasks.
-2. An **External LLM (Gemini via OpenRouter)** processing complex recommendation and analytical tasks via an API key.
+### 1.1 High-Level Data Flow Diagram (DFD Level 0)
 
 ```mermaid
 graph TD
-    A[Client User Interface<br/>Frontend SPA] --> B[API Gateway / Backend Service]
-    B --> C[Database Layer<br/>Users, Tickets, Facilities, Opportunities]
+    %% User Nodes
+    Student((Student User))
+    Admin((EOC/Faculty Admin))
+
+    %% Frontend App
+    SPA[PCCOE OneBridge Vanilla SPA]
+
+    %% Main Backend
+    subgraph PCCOE Secure Intranet [PCCOE Secure Internal Network]
+        Gateway[Python/Express API Gateway]
+        DB[(Core Relational Database)]
+        LocalAI[[Local NLP Agent - HuggingFace/Ollama]]
+    end
+
+    %% External Systems
+    subgraph External Cloud [External AI Cloud]
+        OpenRouter((OpenRouter Gateway))
+        Gemini[Google Gemini API]
+    end
+
+    %% Flow Path
+    Student -- HTTPS / WSS --> SPA
+    Admin -- HTTPS / WSS --> SPA
     
-    B --> D[Local AI Agent<br/>Smart Routing & Fast NLP]
-    B --> E[External LLM Gateway<br/>OpenRouter + Gemini API]
+    SPA -- REST JSON --> Gateway
+    Gateway -- SQL/ORM --> DB
     
-    C --> D
-    C --> E
+    Gateway -- Internal gRPC/REST --> LocalAI
+    Gateway -- HTTPS/TLS (Anonymized Data) --> OpenRouter
+    OpenRouter --> Gemini
 ```
 
 ---
 
-## 2. Technology Stack
+## 2. Security & Firewall Boundaries
 
-- **Frontend Core:** Pure HTML5, Vanilla CSS (Glassmorphism design), Vanilla JavaScript. It behaves like a Single Page Application (SPA).
-- **Backend / API (Proposed):** Python (FastAPI) or Node.js (Express) to securely handle database connections and route API calls to the AI agents.
-- **AI Integration:** 
-  - **Local Agent:** A lightweight NLP model (like a local HuggingFace embedding model or Ollama standard instance) for instant data classification.
-  - **Heavy Reasoning:** Gemini 1.5 Pro/Flash accessed via the OpenRouter API.
-
----
-
-## 3. Dual-Agent AI Architecture
-
-### 3.1 Local Agent
-**Purpose:** Ensure student data privacy on minor tasks, route tickets efficiently, and answer basic technical FAQs without using cloud API tokens.
-
-**Responsibilities:**
-* **Smart Routing Mechanism (Module A):** Reads the description of a student's administrative/academic request and automatically assigns it to the exact administrative desk (e.g., Exam Section vs. Library vs. Faculty Mentor).
-* **Conversational Helpdesk Chatbot (Module B):** Handles Level 1 queries (e.g., "Where is the maker space?", "How do I reset my LMS password?") by checking against local vector stores.
-* **Early Intervention Text-Scoring (Module 9):** Flags toxic, urgent, or high-distress language locally so an immediate alert is escalated.
-
-### 3.2 Gemini via OpenRouter API
-**Purpose:** Handle deep reasoning, personalized advice, and highly unstructured matching using Google's Gemini models through an OpenRouter API key integration.
-
-**Responsibilities:**
-* **Scholarship Match Engine (Module C):** Cross-references a student's highly specific profile (income, grades, disability status) against hundreds of scholarship criteria.
-* **Fellowship Readiness Score (Module D):** Analyses student's uploaded resumes and project descriptions, rating their readiness and offering feedback on SOPs using Gemini's generative capabilities.
-* **Career Recommendation Engine (Module E):** Synthesizes branch, year, skills, and market trends to dynamically suggest internships and roles.
+To ensure strict compliance with the **WCAG & Privacy PRD bounds (Phase 1)**, the network relies on air-gapped mentalities for EOC transactions:
+- **Rule 1:** The Frontend SPA NEVER possesses or has access to external API Keys.
+- **Rule 2:** The API Gateway acts as a strict sanitizer. All JSON payloads are stripped of `StudentID` strings and replaced with Hash UUIDs before transmission to the External Cloud.
+- **Rule 3:** Direct database queries bypass external layers entirely using the `LocalAI` for smart routing logic.
 
 ---
 
-## 4. Platform Modules & Technical Mapping
+## 3. Detailed UML Sequence Diagrams
 
-The system is broken down into specific modular microservices or bounded contexts:
+### 3.1 Smart Routing & Helpdesk Sequence (Using Local AI)
+This handles basic student requirements and ticket escalation without touching cloud APIs, ensuring sub-200ms performance as dictated by the NFR rules.
 
-### Module A: Student Requirements Module
-- **Frontend Component:** Ticket submission forms.
-- **AI Role:** The **Local Agent** classifies the ticket text and predicts the `target_department_id`.
-- **Backend Role:** Stores the ticket, alerts the department, records status changes.
+```mermaid
+sequenceDiagram
+    participant User as Student DOM
+    participant API as API Gateway
+    participant AI as Local NLP Agent
+    participant DB as SQLite/PostgreSQL
+    
+    User->>API: POST /api/v1/tickets {description: "Need wheel-chair access"}
+    activate API
+    API->>AI: Text Classification {payload: "Need wheel-chair access"}
+    activate AI
+    AI-->>API: Returns Category: "EOC_PHYSICAL_ACCESS", Priority: "URGENT"
+    deactivate AI
+    
+    API->>DB: INSERT Ticket WITH (Category, Priority)
+    activate DB
+    DB-->>API: 201 Created (TicketID: 8842)
+    deactivate DB
+    
+    API-->>User: 201 Success Response JSON
+    deactivate API
+```
 
-### Module B: Support & Help Desk
-- **Frontend Component:** Chatbot UI widget and deep-link mental health session booker.
-- **AI Role:** The **Local Agent** attempts to resolve FAQs. If the student signals distress, it intelligently routes them directly to Personal/Wellbeing Support (EOC).
+### 3.2 Generative Resume/Fellowship Scorer (Using Gemini API)
+This maps the complex processing of checking an applicant's resume against Fellowship parameters.
 
-### Module C & D: Scholarships & Fellowships Hub
-- **Frontend Component:** Filterable databases and profile match percentages.
-- **AI Role:** The **Gemini API** is sent an anonymized payload of the student's academic profile. Gemini returns a JSON object containing the top 5 matches and a "Match Explanation" generated text.
-
-### Module E: Internship & Job Opportunities
-- **Frontend Component:** Year-wise Kanban boards or job feeds.
-- **AI Role:** The **Gemini API** is triggered monthly or on-demand to process the user's latest added skills and match them against scraped/provided job listings.
-
-### Module F: Facilities Access
-- **Frontend Component:** Booking calendars and accessibility tags.
-- **AI Role:** Minimal AI requirement. Relies heavily on robust traditional database scheduling logic. 
-
-### Module G: EOC Integration Corner
-- **Frontend Component:** Dedicated, highly accessible (screen-reader optimized, high contrast) sub-routing for EOC students.
-- **AI Role:** Uses the **Local Agent** for completely private, secure interactions regarding grievance redressals without sensitive logs leaving the PCCOE internal server.
+```mermaid
+sequenceDiagram
+    participant User as Student DOM
+    participant API as API Gateway
+    participant Sanitizer as Backend Privacy Middleware
+    participant Cloud as Gemini via OpenRouter
+    
+    User->>API: POST /api/v1/fellowships/evaluate {resume_text, fellowship_id}
+    activate API
+    API->>Sanitizer: Strip Name, Contact, Email 
+    activate Sanitizer
+    Sanitizer-->>API: Returns Anonymized Text
+    deactivate Sanitizer
+    
+    API->>Cloud: POST/OpenRouter {prompt: anonymized_text + scoring criteria}
+    activate Cloud
+    Note over API,Cloud: 2000ms max latency window
+    Cloud-->>API: JSON Response {score: 85, feedback: "Enhance SOP"}
+    deactivate Cloud
+    
+    API-->>User: Renders Feedback to SPA Module D
+    deactivate API
+```
 
 ---
 
-## 5. Security & API Management
-
-Because we are using an external API via OpenRouter (Gemini), the API Keys **MUST** be protected.
-1. The OpenRouter API key will be stored exclusively in a secure `.env` file on the backend server.
-2. The Frontend (HTML/JS) will NEVER make direct calls to OpenRouter.
-3. The Frontend calls the custom Backend API, which then appends the OpenRouter API key and handles the transaction, safely returning only the output to the client.
-
----
-
-## 6. Development Phasing
-
-- **Phase 1:** Build core frontend UI layouts (HTML/CSS/JS) for all modules.
-- **Phase 2:** Initialize Python Backend. Setup the Local Agent for Smart Ticket Routing.
-- **Phase 3:** Integrate OpenRouter (Gemini API) and build the Career/Scholarship Match Engine.
-- **Phase 4:** EOC Accessibility compliance review and platform polish.
+## 4. Accessibility Traffic
+The frontend dynamically polls the backend to track accessibility issues (e.g. Broken Elevators).
+If a facility manager flags a component, the database broadcasts an event. When a visually impaired user accesses the frontend SPA, the DOM automatically adjusts ARIA roles reading out real-time contingency blockers via the standard DOM API integrations.

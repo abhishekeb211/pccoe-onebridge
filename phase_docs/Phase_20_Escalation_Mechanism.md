@@ -5,11 +5,11 @@
 **Working Mechanism**: Cron jobs scanning system timestamps to flag or auto-reassign overdue tickets.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 20.
-- [ ] Execute Core Task: Implement automated timeline warnings based on department SLAs (Service Level Agreements).
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 20.
+- `[x]` Execute Core Task: Implement automated timeline warnings based on department SLAs (Service Level Agreements).
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

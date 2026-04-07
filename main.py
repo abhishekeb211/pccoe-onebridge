@@ -55,7 +55,8 @@ async def check_health():
     })
 
 from pydantic import BaseModel
-# Included from Phase 13/14/15/16
+
+# Included from Phase 13/14/15/16/18/19/20
 try:
     from local_agent import local_agent
 except ImportError:
@@ -66,6 +67,9 @@ try:
 except ImportError:
     llm_gateway = None
 
+from ticket_lifecycle import lifecycle_manager, TicketStatus
+import datetime
+
 class TicketSubmission(BaseModel):
     description: str
 
@@ -73,13 +77,26 @@ class TicketSubmission(BaseModel):
 @app.post("/api/v1/tickets", tags=["Module A: Smart Routing"])
 async def submit_ticket(payload: TicketSubmission):
     """
-    Submits student ticket. Routes securely via Local NLP Agent (Phase 14).
+    Submits student ticket. Routes securely via Local NLP Agent (Phase 14) 
+    and handles state pipelines natively (Phase 18/19).
     """
     if local_agent:
         routing_data = local_agent.classify_ticket(payload.description)
+        
+        # Phase 18 auto assignment
+        assignment = lifecycle_manager.assign_coordinator(
+            routing_data['confidence_score'], 
+            routing_data['predicted_department']
+        )
+        
+        # Phase 19 Lifecycle lock
+        status = TicketStatus.SUBMITTED.value
+        
         return {
-            "status": "Ticket Created",
-            "analytics": routing_data
+            "status": status,
+            "owner": assignment,
+            "analytics_trace": routing_data,
+            "timestamp": datetime.datetime.utcnow().isoformat()
         }
     return {"message": "Agent Offline. Default Route Applied."}
 

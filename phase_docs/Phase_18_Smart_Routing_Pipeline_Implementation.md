@@ -5,11 +5,11 @@
 **Working Mechanism**: Combines Phase 14's classifier with the Ticket Database to auto-assign a department coordinator.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 18.
-- [ ] Execute Core Task: Write the background worker function mapping confidence scores to direct re-routing.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 18.
+- `[x]` Execute Core Task: Write the background worker function mapping confidence scores to direct re-routing.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

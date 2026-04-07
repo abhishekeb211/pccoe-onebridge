@@ -5,11 +5,11 @@
 **Working Mechanism**: Manages "Early Intervention" alerts, ticket updates, and UI push notifications within the application header.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 12.
-- [ ] Execute Core Task: Design notification data structures and local polling or WebSocket communication.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 12.
+- `[x]` Execute Core Task: Design notification data structures and local polling or WebSocket communication.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

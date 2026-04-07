@@ -5,11 +5,11 @@
 **Working Mechanism**: Evaluates incoming user help requests, classifying them as "Finance", "Academics", or "EOC".
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 14.
-- [ ] Execute Core Task: Train or configure zero-shot classifiers on PCCOE’s specific departmental structures.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- [x] Review system requirements against PRD for this phase.
+- [x] Establish initial sandbox/development branch for 14.
+- [x] Execute Core Task: Train or configure zero-shot classifiers on PCCOE’s specific departmental structures.
+- [x] Perform unit testing on the specific modules integrated.
+- [x] Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

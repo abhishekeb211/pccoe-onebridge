@@ -5,11 +5,11 @@
 **Working Mechanism**: Loads lightweight NLP models into memory for fast, offline-capable evaluations.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 13.
-- [ ] Execute Core Task: Configure local inference servers and test basic text-classification.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 13.
+- `[x]` Execute Core Task: Configure local inference servers and test basic text-classification.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

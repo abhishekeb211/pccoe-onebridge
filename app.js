@@ -345,3 +345,43 @@ document.addEventListener('DOMContentLoaded', () => {
     renderView(GlobalState.ui.currentRoute);
 });
 
+// --- Phase 12: Notification & Alerting Engine ---
+const toastContainer = document.createElement('div');
+toastContainer.className = 'toast-container';
+toastContainer.setAttribute('aria-live', 'polite');
+document.body.appendChild(toastContainer);
+
+window.showNotification = (message, type = "info") => {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    let icon = "ℹ️";
+    if (type === "urgent") icon = "⚠️";
+    if (type === "success") icon = "✅";
+
+    toast.innerHTML = `
+        <span style="font-size: 1.5rem;">${icon}</span>
+        <div>
+            <strong style="display: block; font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary);">${type}</strong>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Explicit Screen Reader Notification
+    routeAnnouncer.textContent = `Notification: ${message}`;
+    
+    // Auto cleanup
+    setTimeout(() => {
+        if(toastContainer.contains(toast)) {
+            toastContainer.removeChild(toast);
+        }
+    }, 5000);
+};
+
+// Test Phase 12 Execution dynamically:
+setTimeout(() => {
+    window.showNotification("Welcome to PCCOE OneBridge Alpha", "success");
+}, 1500);
+

@@ -54,11 +54,30 @@ async def check_health():
         "latency_target": "Sub-200ms Verified"
     })
 
-# 4. Phase-Placeholder Routing 
+from pydantic import BaseModel
+# Included from Phase 13/14
+# Note: we import it conditionally or expect it's available locally
+try:
+    from local_agent import local_agent
+except ImportError:
+    local_agent = None
+
+class TicketSubmission(BaseModel):
+    description: str
+
+# 4. Routing logic replacing placeholder
 @app.post("/api/v1/tickets", tags=["Module A: Smart Routing"])
-async def mock_submit_ticket():
-    # Will interface with Local NLP Agent in Phase 13/14
-    return {"message": "Endpoint Scaffolded"}
+async def submit_ticket(payload: TicketSubmission):
+    """
+    Submits student ticket. Routes securely via Local NLP Agent (Phase 14).
+    """
+    if local_agent:
+        routing_data = local_agent.classify_ticket(payload.description)
+        return {
+            "status": "Ticket Created",
+            "analytics": routing_data
+        }
+    return {"message": "Agent Offline. Default Route Applied."}
 
 @app.get("/api/v1/opportunities/matches", tags=["Module C/D/E: AI Match Engines"])
 async def mock_fetch_matches():

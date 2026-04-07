@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import time
+import auth # Included from Phase 9
 
 app = FastAPI(
     title="PCCOE OneBridge API",
@@ -27,6 +28,9 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+# Connect Phase 9 Auth Module globally
+app.include_router(auth.router)
 
 # 2. Middleware for Performance Tracking (Sub-200ms latency NFR requirement)
 @app.middleware("http")

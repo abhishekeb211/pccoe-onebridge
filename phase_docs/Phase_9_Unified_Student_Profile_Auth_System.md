@@ -5,11 +5,11 @@
 **Working Mechanism**: Logs in users, issues security tokens, and fetches base profile data.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 9.
-- [ ] Execute Core Task: Implement OAuth or internal academic email SSO (Single Sign-On).
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 9.
+- `[x]` Execute Core Task: Implement OAuth or internal academic email SSO (Single Sign-On).
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

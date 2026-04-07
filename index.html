@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCCOE OneBridge - Student Success & Inclusion</title>
+    <meta name="description" content="A unified digital platform for academic support, professional growth, facility access, and inclusive student welfare at PCCOE.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <!-- Navigation Layer -->
+    <nav class="glass-nav" aria-label="Main Navigation">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>One<span>Bridge</span></h1>
+            </div>
+            <div class="nav-links">
+                <button class="nav-item active" data-route="dashboard" aria-label="Go to Dashboard">My Dashboard</button>
+                <button class="nav-item" data-route="opportunities" aria-label="Browse Opportunities">Opportunities</button>
+                <button class="nav-item" data-route="facilities" aria-label="Access Facilities">Facilities</button>
+                <button class="nav-item" data-route="support" aria-label="Support Center">Support Center</button>
+                <button class="nav-item eoc-highlight" data-route="eoc" aria-label="Equal Opportunity Cell">EOC Inclusion</button>
+            </div>
+            <div class="user-profile">
+                <div class="avatar" aria-hidden="true">JS</div>
+                <div class="profile-info">
+                    <span class="student-name">Jane Smith</span>
+                    <span class="student-detail">3rd Yr Computer Engg</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Unified SPA Container -->
+    <main id="app-root" class="app-container" aria-live="polite">
+        <!-- Views will be injected here by app.js -->
+    </main>
+
+    <!-- FAB for Accessibility / Emergency Support -->
+    <div class="fab-container">
+        <button class="fab accessibility-fab" aria-label="Accessibility Options">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path></svg>
+        </button>
+        <button class="fab emergency-fab" aria-label="Emergency / Urgent Help">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+        </button>
+    </div>
+
+    <!-- Inject JS -->
+    <script src="app.js"></script>
+</body>
+</html>

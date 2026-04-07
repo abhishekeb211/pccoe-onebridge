@@ -1,0 +1,323 @@
+/* 
+   PCCOE OneBridge - Global CSS Design System
+   Modern, Vibrant, Glassmorphism & High Contrast 
+*/
+
+:root {
+    /* Rich Color Palette */
+    --primary: #4F46E5;        /* Vibrant Indigo */
+    --primary-light: #818CF8;
+    --primary-dark: #3730A3;
+    
+    --secondary: #10B981;      /* Emerald Green */
+    --accent: #F43F5E;         /* Rose Red */
+    --warning: #F59E0B;        /* Amber */
+    
+    /* EOC Special Theming */
+    --eoc-brand: #8B5CF6;      /* Violet */
+    --eoc-brand-light: #C4B5FD;
+
+    /* Surfaces and Text (Dark Mode as Default for Modern Look, with Light Support) */
+    --bg-base: #0F172A;        /* Slate 900 */
+    --bg-surface: #1E293B;     /* Slate 800 */
+    --text-primary: #F8FAFC;   /* Slate 50 */
+    --text-secondary: #94A3B8; /* Slate 400 */
+
+    /* Glass Effects */
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Typography */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Standardized Shadows */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.5);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease-in-out;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    font-size: 16px;
+}
+
+/* Background Gradients to look alive */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.15), transparent 40%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+/* Navigation Layer (Glassmorphism) */
+.glass-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1rem 2rem;
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo h1 span {
+    color: var(--primary-light);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: var(--transition-fast);
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-item.active {
+    color: var(--primary-light);
+    background: rgba(79, 70, 229, 0.1);
+    border-bottom: 3px solid var(--primary);
+    border-radius: 8px 8px 0 0;
+}
+
+.eoc-highlight {
+    color: var(--eoc-brand-light);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.eoc-highlight:hover {
+    background: rgba(139, 92, 246, 0.15);
+    color: white;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.student-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.student-detail {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* App Container */
+.app-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    animation: fadeIn var(--transition-smooth);
+}
+
+/* Common View Layout */
+.view-header {
+    margin-bottom: 2rem;
+}
+
+.view-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.view-header p {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
+/* Grid Layouts for Content */
+.dashboard-grid, .opportunities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+/* Glassmorphic Cards */
+.glass-card {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-sm);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card-title {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.card-icon {
+    font-size: 1.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.8rem;
+    border-radius: 12px;
+}
+
+/* Smart Status Badges */
+.badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+.badge.approved { background: rgba(16, 185, 129, 0.15); color: var(--secondary); border: 1px solid var(--secondary); }
+.badge.urgent { background: rgba(244, 63, 94, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border: none;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-family: var(--font-body);
+}
+
+.btn-primary:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
+/* Floating Action Buttons */
+.fab-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 1000;
+}
+
+.fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.fab:hover {
+    transform: scale(1.1);
+}
+
+.emergency-fab {
+    background: var(--accent);
+}
+
+.accessibility-fab {
+    background: var(--primary-dark);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Accessibility Focus States */
+*:focus-visible {
+    outline: 3px solid var(--eoc-brand-light);
+    outline-offset: 3px;
+}

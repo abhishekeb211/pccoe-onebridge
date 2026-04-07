@@ -5,11 +5,11 @@
 **Working Mechanism**: Maps business rules across all branches, degree years, and EOC parameters.
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 1.
-- [ ] Execute Core Task: Finalize the PRD (Product Requirements Document), identifying every target user and non-functional requirement (accessibility, speed, uptime).
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 1.
+- `[x]` Execute Core Task: Finalize the PRD (Product Requirements Document), identifying every target user and non-functional requirement (accessibility, speed, uptime).
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

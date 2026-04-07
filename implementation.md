@@ -49,10 +49,7 @@ At present, students usually face fragmented systems:
 * faculty mentors
 * department coordinators
 * EOC members
-* placement cell
-* scholarship office
-* hostel/library/lab administrators
-* support desk team
+* Super Admin
 
 ---
 
@@ -365,15 +362,14 @@ This is critical because the platform should not merely mention inclusion; it sh
 * publish welfare schemes
 * track inclusion issues
 
-### Placement/admin staff
-* post internships and jobs
-* schedule drives
-* verify applications
+### Super Admin
 
-### Facility manager
-* manage bookings
-* approve requests
-* publish facility updates
+* manage all modules
+* view analytics
+* handle escalations
+* configure system settings
+* manage user roles
+* publish announcements
 
 ---
 

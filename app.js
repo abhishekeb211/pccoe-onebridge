@@ -60,53 +60,73 @@ const mockFacilities = [
 
 const generateDashboard = () => `
     <div class="view-header">
-        <h2>Welcome back, ${userData.name}!</h2>
-        <p>Here is your daily snapshot and pending items.</p>
+        <h2>Welcome back, ${GlobalState.user.name}</h2>
+        <p>Here is your daily OneBridge snapshot for ${GlobalState.user.branch}.</p>
     </div>
     <div class="dashboard-grid">
+        <!-- Snapshot 1: Active Tickets -->
         <div class="glass-card">
             <div class="card-title">
-                <span class="card-icon">📝</span>
-                <h3>My Requests</h3>
+                <span class="card-icon">🎫</span>
+                <h3>Active Tickets</h3>
             </div>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
-                <li style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Bonafide Certificate</span>
-                    <span class="badge approved">Approved</span>
-                </li>
-                <li style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Library Overdue Issue</span>
-                    <span class="badge pending">Under Review</span>
-                </li>
-            </ul>
-            <br>
-            <button class="btn-primary" style="width: 100%;">Raise New Request</button>
-        </div>
-        
-        <div class="glass-card" style="border-color: rgba(139, 92, 246, 0.4);">
-            <div class="card-title" style="color: var(--eoc-brand-light);">
-                <span class="card-icon" style="background: rgba(139, 92, 246, 0.2);">🤝</span>
-                <h3>EOC Reminders</h3>
+            <p>You have <strong>1</strong> active administrative request.</p>
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>WiFi Access Drop</span>
+                    <span class="badge pending">Pending</span>
+                </div>
+                <small style="color: var(--text-secondary);">Routed to IT Department</small>
             </div>
-            <p style="margin-bottom: 1rem;">Disabled Student Scholarship renewal is due next week. Have you prepared your documents?</p>
-            <button class="btn-primary" style="background: var(--eoc-brand); width: 100%;">View Guidelines</button>
+            <button class="btn-primary" style="margin-top: 1.5rem; width: 100%;" onclick="renderView('support')">View All Tickets</button>
         </div>
 
-        <div class="glass-card">
+        <!-- Snapshot 2: AI Matched Opportunities -->
+        <div class="glass-card" style="border-top: 4px solid var(--secondary);">
             <div class="card-title">
                 <span class="card-icon">✨</span>
-                <h3>AI Career Matches</h3>
+                <h3>New Opportunities</h3>
             </div>
-            <p style="margin-bottom: 1rem; color: var(--text-secondary);">Based on your profile (3rd Yr Comp):</p>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
-                ${mockOpportunities.slice(0, 2).map(opp => `
-                    <li style="padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <strong>${opp.title}</strong><br>
-                        <small style="color: var(--secondary);">${opp.matcher}</small>
-                    </li>
-                `).join('')}
-            </ul>
+            <p>Gemini AI matched <strong>2</strong> scholarships to your profile.</p>
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>MahaDBT Maintenance</span>
+                    <span class="badge approved">98% Match</span>
+                </div>
+                <small style="color: var(--text-secondary);">Deadline: Oct 15</small>
+            </div>
+            <button class="btn-primary" style="margin-top: 1.5rem; width: 100%;" onclick="renderView('opportunities')">Review Matches</button>
         </div>
+
+        <!-- Snapshot 3: Facility Bookings -->
+        <div class="glass-card" style="border-top: 4px solid var(--primary-light);">
+            <div class="card-title">
+                <span class="card-icon">🏢</span>
+                <h3>Facility Access</h3>
+            </div>
+            <p>Your upcoming reservations.</p>
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Library Study Room 4</span>
+                    <span class="badge ${GlobalState.user.needsEOC ? 'urgent' : 'approved'}">
+                        ${GlobalState.user.needsEOC ? 'Priority Assigned' : 'Confirmed'}
+                    </span>
+                </div>
+                <small style="color: var(--text-secondary);">Today, 2:00 PM - 4:00 PM</small>
+            </div>
+        </div>
+        
+        ${GlobalState.user.needsEOC ? `
+        <!-- Priority EOC Alert -->
+        <div class="glass-card" style="border-top: 4px solid var(--eoc-brand);">
+            <div class="card-title">
+                <span class="card-icon">♿</span>
+                <h3>EOC Quick Actions</h3>
+            </div>
+            <p>The main library elevator is currently functioning.</p>
+            <button class="btn-primary" style="margin-top: 1.5rem; width: 100%; background: linear-gradient(135deg, var(--eoc-brand), var(--eoc-brand-light));" onclick="renderView('eoc')">Open EOC Portal</button>
+        </div>
+        ` : ''}
     </div>
 `;
 

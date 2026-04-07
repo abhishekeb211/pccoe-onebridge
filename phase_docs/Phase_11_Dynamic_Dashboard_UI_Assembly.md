@@ -5,11 +5,11 @@
 **Working Mechanism**: Aggregates top-level snapshot data from all other modules (pending tickets, matched jobs).
 
 ## 2. Detailed Tasks
-- [ ] Review system requirements against PRD for this phase.
-- [ ] Establish initial sandbox/development branch for 11.
-- [ ] Execute Core Task: Build the grid components and connect them to aggregation API endpoints.
-- [ ] Perform unit testing on the specific modules integrated.
-- [ ] Conduct accessibility and security review before requesting a merge.
+- `[x]` Review system requirements against PRD for this phase.
+- `[x]` Establish initial sandbox/development branch for 11.
+- `[x]` Execute Core Task: Build the grid components and connect them to aggregation API endpoints.
+- `[x]` Perform unit testing on the specific modules integrated.
+- `[x]` Conduct accessibility and security review before requesting a merge.
 
 ## 3. Requirements
 **Functional Requirements:**

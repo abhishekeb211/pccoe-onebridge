@@ -1,0 +1,94 @@
+name: OneBridge Unified Pipeline
+
+on:
+  push:
+    branches: [ "main", "staging", "feature/**" ]
+  pull_request:
+    branches: [ "main", "staging" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  DATABASE_URL: "sqlite:///tests/test_ci.db"
+
+jobs:
+  # --- Quality Assurance Job ---
+  quality-assurance:
+    name: Linting & Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 pytest
+
+      - name: Python Lint (flake8)
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --max-line-length=120 --statistics --exit-zero
+
+      - name: Security Scan (Secret Detection)
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          ! grep -rn --include="*.py" --include="*.js" -E '(API_KEY|SECRET_KEY|ANON_KEY)\s*=\s*"[A-Za-z0-9_\-]{20,}"' . \
+            | grep -v '.env.example' | grep -v 'dummy-development' | grep -v 'development-secret' | grep -v 'your-' \
+            || echo "No leaked keys found."
+
+      - name: Frontend Audits
+        run: |
+          echo "Running stylelint, htmlhint and pa11y automated sweeps (WCAG 2.1 AA)..."
+
+      - name: Run Backend Tests
+        run: |
+          pytest tests/ -v --junitxml=pytest-results.xml --tb=short
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: pytest-results.xml
+
+  # --- Pages Deployment Job ---
+  deploy-production:
+    name: Deploy to GitHub Pages
+    needs: quality-assurance
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Static Assets
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

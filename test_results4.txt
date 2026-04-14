@@ -1,0 +1,118 @@
+........................................................................ [ 31%]
+.....FFF.........F...............F...............F...................... [ 63%]
+..................................F....................s................ [ 95%]
+..........                                                               [100%]
+================================== FAILURES ===================================
+__________________ TestMatchScoring.test_match_history_query __________________
+tests\verify_phase_25_28.py:56: in test_match_history_query
+    opp = seed_opportunity(db)
+          ^^^^^^^^^^^^^^^^^^^^
+tests\conftest.py:107: in seed_opportunity
+    o = Opportunity(
+<string>:4: in __init__
+    ???
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\state.py:566: in _initialize_instance
+    with util.safe_reraise():
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\util\langhelpers.py:147: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\state.py:564: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\decl_base.py:2134: in _declarative_constructor
+    raise TypeError(
+E   TypeError: 'provider' is an invalid keyword argument for Opportunity
+_________________ TestMatchScoring.test_match_record_creation _________________
+tests\verify_phase_25_28.py:35: in test_match_record_creation
+    opp = seed_opportunity(db)
+          ^^^^^^^^^^^^^^^^^^^^
+tests\conftest.py:107: in seed_opportunity
+    o = Opportunity(
+<string>:4: in __init__
+    ???
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\state.py:566: in _initialize_instance
+    with util.safe_reraise():
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\util\langhelpers.py:147: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\state.py:564: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\decl_base.py:2134: in _declarative_constructor
+    raise TypeError(
+E   TypeError: 'provider' is an invalid keyword argument for Opportunity
+________________ TestMatchScoring.test_match_score_calculation ________________
+tests\verify_phase_25_28.py:76: in test_match_score_calculation
+    opp = seed_opportunity(db, branches="Computer Engineering", years="3,4")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\conftest.py:107: in seed_opportunity
+    o = Opportunity(
+<string>:4: in __init__
+    ???
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\state.py:566: in _initialize_instance
+    with util.safe_reraise():
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\util\langhelpers.py:147: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\state.py:564: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\sqlalchemy\orm\decl_base.py:2134: in _declarative_constructor
+    raise TypeError(
+E   TypeError: 'provider' is an invalid keyword argument for Opportunity
+________________ TestPhase25_28Schema.test_all_tables_created _________________
+tests\verify_phase_25_28.py:291: in test_all_tables_created
+    inspector = inspect(engine)
+                        ^^^^^^
+E   NameError: name 'engine' is not defined
+________________ TestPhase29_32Schema.test_all_tables_created _________________
+tests\verify_phase_29_32.py:279: in test_all_tables_created
+    inspector = inspect(engine)
+                        ^^^^^^
+E   NameError: name 'engine' is not defined
+________________ TestPhase33_36Schema.test_all_tables_created _________________
+tests\verify_phase_33_36.py:305: in test_all_tables_created
+    inspector = inspect(engine)
+                        ^^^^^^
+E   NameError: name 'engine' is not defined
+______________ TestPhase6DatabaseCRUD.test_all_core_tables_exist ______________
+tests\verify_phase_6.py:151: in test_all_core_tables_exist
+    inspector = inspect(TEST_ENGINE)
+                        ^^^^^^^^^^^
+E   NameError: name 'TEST_ENGINE' is not defined
+============================== warnings summary ===============================
+tests/verify_phase_17_20.py::TestEscalation::test_fresh_ticket_not_escalated
+  D:\Projects\Special Students\tests\verify_phase_17_20.py:111: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow()
+
+tests/verify_phase_17_20.py::TestEscalation::test_fresh_ticket_not_escalated
+tests/verify_phase_17_20.py::TestEscalation::test_sla_breach_escalates_ticket
+  d:\Projects\Special Students\ticket_lifecycle.py:61: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/verify_phase_17_20.py::TestEscalation::test_sla_breach_escalates_ticket
+  D:\Projects\Special Students\tests\verify_phase_17_20.py:86: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow() - timedelta(days=5)
+
+tests/verify_phase_9_10.py::TestAuthModule::test_jwt_token_creation
+  d:\Projects\Special Students\auth.py:35: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expire = datetime.utcnow() + timedelta(minutes=15)
+
+tests/verify_phase_9_10.py::TestAuthModule::test_jwt_token_decode
+  d:\Projects\Special Students\auth.py:33: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expire = datetime.utcnow() + expires_delta
+
+tests/verify_phase_9_10.py::TestAuthModule::test_jwt_token_decode
+  C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\jose\jwt.py:311: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = timegm(datetime.utcnow().utctimetuple())
+
+tests/verify_phase_13_14.py::TestPhase13LocalAgentInit::test_agent_loads_in_background_thread
+tests/verify_phase_13_14.py::TestPhase13LocalAgentInit::test_agent_loads_in_background_thread
+tests/verify_phase_13_14.py::TestPhase13LocalAgentInit::test_agent_has_classifier_after_init
+  C:\Users\Abhis\AppData\Roaming\Python\Python312\site-packages\transformers\models\roberta\tokenization_roberta.py:144: DeprecationWarning: Deprecated in 0.9.0: BPE.__init__ will not create from files anymore, try `BPE.from_file` instead
+    BPE(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/verify_phase_25_28.py::TestMatchScoring::test_match_history_query
+FAILED tests/verify_phase_25_28.py::TestMatchScoring::test_match_record_creation
+FAILED tests/verify_phase_25_28.py::TestMatchScoring::test_match_score_calculation
+FAILED tests/verify_phase_25_28.py::TestPhase25_28Schema::test_all_tables_created
+FAILED tests/verify_phase_29_32.py::TestPhase29_32Schema::test_all_tables_created
+FAILED tests/verify_phase_33_36.py::TestPhase33_36Schema::test_all_tables_created
+FAILED tests/verify_phase_6.py::TestPhase6DatabaseCRUD::test_all_core_tables_exist
+7 failed, 218 passed, 1 skipped, 10 warnings in 49.23s

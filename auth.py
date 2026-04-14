@@ -1,10 +1,13 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+from sqlalchemy.orm import Session
+
+from database_schema import SessionLocal, StudentProfile
 
 # Phase 9: Unified Student Auth & JWT Issuance
 
@@ -27,9 +30,9 @@ def get_password_hash(password):
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -49,12 +52,32 @@ async def get_current_student(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-        
-    # Scaffold DB connection here securely mapping to Phase 4 User Model
-    # Example: student = get_user_from_db(prn)
-    
-    mock_student = {"prn": prn, "is_disadvantaged": False} 
-    return mock_student
+
+    db = SessionLocal()
+    try:
+        student = db.query(StudentProfile).filter(StudentProfile.prn == prn).first()
+    finally:
+        db.close()
+
+    if student is None:
+        raise credentials_exception
+
+    return {
+        "prn": student.prn,
+        "name": student.name,
+        "email": student.email,
+        "is_disadvantaged": student.is_disadvantaged,
+        "has_disability": student.has_disability,
+        "roles": _build_roles(student),
+    }
+
+
+def _build_roles(student):
+    """Derive role list from DB role field + EOC eligibility flags."""
+    roles = [student.role or "student"]
+    if student.is_disadvantaged or student.has_disability:
+        roles.append("eoc_eligible")
+    return roles
 
 @router.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -62,19 +85,43 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     Academic SSO endpoint. Students use PCCOE email or PRN.
     Returns zero-knowledge JWT locking EOC capabilities.
     """
-    # Dummy verification. Phase 6 scaffolding logic.
-    if not form_data.username.endswith("@pccoepune.org") and len(form_data.username) < 8:
+    db = SessionLocal()
+    try:
+        # Look up student by email or PRN
+        student = db.query(StudentProfile).filter(
+            (StudentProfile.email == form_data.username) | (StudentProfile.prn == form_data.username)
+        ).first()
+    finally:
+        db.close()
+
+    if not student:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect PCCOE ID or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        
+
+    # Verify password if the student has a password_hash set
+    if student.password_hash and not verify_password(form_data.password, student.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect PCCOE ID or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    
-    # "sub" payload assigns strictly to the student's PRN identifier mapping perfectly to our SQL Schema
+    roles = _build_roles(student)
+
     access_token = create_access_token(
-        data={"sub": form_data.username, "roles": ["student"]}, expires_delta=access_token_expires
+        data={"sub": student.prn, "roles": roles}, expires_delta=access_token_expires
     )
-    
+
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/me")
+async def get_my_profile(current_user: dict = Depends(get_current_student)):
+    """
+    Returns the authenticated student's profile including roles.
+    """
+    return current_user

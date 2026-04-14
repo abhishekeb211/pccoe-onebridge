@@ -23,6 +23,7 @@
 
 ## 4. Libraries & Tech Stack
 - HTML5, CSS3, Vanilla JS
+- Supabase SDK (Auth, DB, Realtime)
 - Standard DOM API
 - Git & GitHub CLI (Version Control)
 

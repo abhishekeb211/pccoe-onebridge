@@ -14,7 +14,9 @@ To ensure optimal privacy, particularly surrounding the **Equal Opportunity Cell
   * Smart-Routing of student Help Desk tickets (Intent classification).
   * Fast, real-time Help Desk Chatbot processing generic FAQ from the college knowledge base.
   * EOC distress detection (Locally flagging distress language without cloud intervention).
-* **Network Constraint:** This model MUST run solely on PCCOE's isolated intranet servers. No connection to public internets is required or permitted for inference.
+* **Network Constraint:** This model MUST run solely on PCCOE's- **Storage Layer**: Supabase Row-Level Security (RLS) policies must be architected to prevent AI agents from "hallucinating" or leaking data across user sessions.
+- **Anonymization Engine**: All user requests must be scrubbed of PII (Phase 16) before being sent to external LLMs.
+- **Local Priority**: Local NLP takes precedence for all routing decisions. External LLMs are only used for reasoning-heavy tasks.)
 
 ### 1.2 The External Cloud API (Reasoning-Heavy)
 * **Designated Models:** `google/gemini-1.5-pro` and `google/gemini-1.5-flash` accessed STRICTLY via **OpenRouter**.

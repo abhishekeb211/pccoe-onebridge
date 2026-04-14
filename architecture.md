@@ -47,7 +47,10 @@ graph TD
 To ensure strict compliance with the **WCAG & Privacy PRD bounds (Phase 1)**, the network relies on air-gapped mentalities for EOC transactions:
 - **Rule 1:** The Frontend SPA NEVER possesses or has access to external API Keys.
 - **Rule 2:** The API Gateway acts as a strict sanitizer. All JSON payloads are stripped of `StudentID` strings and replaced with Hash UUIDs before transmission to the External Cloud.
-- **Rule 3:** Direct database queries bypass external layers entirely using the `LocalAI` for smart routing logic.
+- **Backend API**: FastAPI (Python) for business logic and Local NLP.
+- **Backend-as-a-Service (BaaS)**: Supabase for Auth, PostgreSQL Database, and Storage.
+- **External AI**: Gemini 1.5 Pro via OpenRouter Gateway.
+- **Local AI**: Distil-BART mnli for privacy-first ticket routing. logic.
 
 ---
 

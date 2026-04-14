@@ -1,8 +1,8 @@
 # Phase 2: System Architecture Design
 
 ## 1. Module Overview
-**Functionality**: Establish the blueprint for cloud infrastructure and local networks.
-**Working Mechanism**: Defines how the frontend browser communicates securely with the API gateway and database.
+**Functionality**: Establish the blueprint for cloud infrastructure and local networks using Supabase.
+**Working Mechanism**: Defines how the frontend browser communicates securely with Supabase Services (Auth, DB, Storage) and the FastAPI Gateway.
 
 ## 2. Detailed Tasks
 - `[x]` Review system requirements against PRD for this phase.

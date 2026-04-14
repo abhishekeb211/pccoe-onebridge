@@ -22,9 +22,9 @@
 - **Accessibility:** Ensure all new UI complies with WCAG 2.1 AA standards.
 
 ## 4. Libraries & Tech Stack
+- Supabase SDK (Data Verification)
 - OpenRouter API SDK
 - Google Generative AI bindings
 - HuggingFace Transformers (Local agent)
-- Pandas (Data curation)
 - Git & GitHub CLI (Version Control)
 

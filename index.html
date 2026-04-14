@@ -13,31 +13,44 @@
 </head>
 <body>
     
+    <!-- Skip to content link for keyboard users -->
+    <a href="#app-root" class="skip-link">Skip to main content</a>
+
     <!-- Navigation Layer -->
     <nav class="glass-nav" aria-label="Main Navigation">
         <div class="nav-container">
             <div class="logo">
                 <h1>One<span>Bridge</span></h1>
             </div>
-            <div class="nav-links">
-                <button class="nav-item active" data-route="dashboard" aria-label="Go to Dashboard">My Dashboard</button>
-                <button class="nav-item" data-route="opportunities" aria-label="Browse Opportunities">Opportunities</button>
-                <button class="nav-item" data-route="facilities" aria-label="Access Facilities">Facilities</button>
-                <button class="nav-item" data-route="support" aria-label="Support Center">Support Center</button>
-                <button class="nav-item eoc-highlight" data-route="eoc" aria-label="Equal Opportunity Cell">EOC Inclusion</button>
+            <div class="nav-links" role="tablist" aria-label="Application sections">
+                <button class="nav-item active" data-route="dashboard" role="tab" aria-selected="true" aria-controls="app-root" aria-label="Go to Dashboard">My Dashboard</button>
+                <button class="nav-item" data-route="opportunities" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Browse Opportunities">Opportunities</button>
+                <button class="nav-item" data-route="facilities" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Access Facilities">Facilities</button>
+                <button class="nav-item" data-route="support" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Support Center">Support Center</button>
+                <button class="nav-item" data-route="kb" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Knowledge Base">Help Desk</button>
+                <button class="nav-item" data-route="chatbot" role="tab" aria-selected="false" aria-controls="app-root" aria-label="AI Chatbot">Chatbot</button>
+                <button class="nav-item" data-route="scholarships" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Scholarships">Scholarships</button>
+                <button class="nav-item" data-route="applications" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Application Tracker">Applications</button>
+                <button class="nav-item" data-route="careers" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Career Inventory">Careers</button>
+                <button class="nav-item" data-route="readiness" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Readiness Scorer">Readiness</button>
+                <button class="nav-item" data-route="resources" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Campus Resources">Resources</button>
+                <button class="nav-item" data-route="analytics" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Inclusion Analytics">Analytics</button>
+                <button class="nav-item" data-route="admin" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Admin Portal">Admin</button>
+                <button class="nav-item eoc-highlight" data-route="eoc" role="tab" aria-selected="false" aria-controls="app-root" aria-label="Equal Opportunity Cell">EOC Inclusion</button>
             </div>
             <div class="user-profile">
-                <div class="avatar" aria-hidden="true">JS</div>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle light/dark mode">🌙</button>
+                <div class="avatar" aria-hidden="true">?</div>
                 <div class="profile-info">
-                    <span class="student-name">Jane Smith</span>
-                    <span class="student-detail">3rd Yr Computer Engg</span>
+                    <span class="student-name">Not logged in</span>
+                    <span class="student-detail">Sign in to access services</span>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Unified SPA Container -->
-    <main id="app-root" class="app-container" aria-live="polite">
+    <main id="app-root" class="app-container" role="tabpanel" aria-live="polite" tabindex="-1">
         <!-- Views will be injected here by app.js -->
     </main>
 
@@ -52,6 +65,9 @@
     </div>
 
     <!-- Inject JS -->
+    <!-- Supabase Client Setup -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="api.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

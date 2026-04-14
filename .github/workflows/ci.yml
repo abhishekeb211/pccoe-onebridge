@@ -35,7 +35,14 @@ jobs:
         env:
           DATABASE_URL: "sqlite:///tests/test_ci.db"
         run: |
-          pytest tests/ -v --tb=short
+          pytest tests/ -v --junitxml=pytest-results.xml --tb=short
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: pytest-results.xml
+
 
   frontend-accessibility-security:
     runs-on: ubuntu-latest

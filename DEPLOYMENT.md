@@ -11,19 +11,22 @@ The frontend works as a standalone static site with mock data when the backend A
    git init
    git add .
    git commit -m "Initial commit: PCCOE OneBridge"
-   git remote add origin https://github.com/<your-username>/special-students.git
+   git remote add origin https://github.com/<your-username>/pccoe-onebridge.git
    git push -u origin main
    ```
 
 2. **Enable GitHub Pages**
-   - Go to **Settings → Pages** in your repository
-   - Under **Source**, select **GitHub Actions**
-   - The workflow at `.github/workflows/deploy.yml` will auto-deploy on push to `main`
+   - Go to **Settings → Pages** in your repository.
+   - > [!IMPORTANT]
+   - > Under **Build and deployment > Source**, you MUST select **"GitHub Actions"** from the dropdown menu. 
+   - > By default, GitHub often sets this to "Deploy from a branch", which will NOT work with our custom workflow.
+   - Once set to "GitHub Actions", the workflow at `.github/workflows/deploy.yml` will automatically trigger on every push to the `main` branch.
 
 3. **Access Your Site**
-   - URL: `https://<your-username>.github.io/special-students/`
-   - The site runs in **Demo Mode** — all views use mock data
-   - Login with any username/password to access the dashboard
+   - URL: `https://<your-username>.github.io/pccoe-onebridge/`
+   - The site runs in **Demo Mode** — all views use mock data.
+   - Login with any username/password to access the dashboard.
+
 
 ### Demo Mode Features
 - All 14 navigation views fully functional

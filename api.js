@@ -4,6 +4,17 @@
  */
 
 const IS_GITHUB_PAGES = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+const REPO_NAME = 'pccoe-onebridge'; // Repository name for subdirectory hosting
+
+// Detect correct base path for static assets
+const getBasePath = () => {
+    if (IS_GITHUB_PAGES && window.location.hostname.includes('github.io')) {
+        return `/${REPO_NAME}/`;
+    }
+    return './';
+};
+
+const BASE_PATH = getBasePath();
 const API_BASE_URL = IS_GITHUB_PAGES ? '' : "http://localhost:8000";
 
 const ApiService = {
@@ -19,7 +30,11 @@ const ApiService = {
 
     async fetchJSON(endpoint, options = {}) {
         if (IS_GITHUB_PAGES) {
-            throw new Error('API unavailable in static mode');
+            // In static mode, we intercept and throw a specific 'static' error 
+            // that app.js can catch to provide mock fallbacks.
+            const error = new Error('API unavailable in static mode');
+            error.isStatic = true;
+            throw error;
         }
         const url = `${API_BASE_URL}${endpoint}`;
         const headers = {
@@ -43,13 +58,17 @@ const ApiService = {
 
             return await response.json();
         } catch (err) {
-            if (err.status) throw err;
+            if (err.status || err.isStatic) throw err;
             throw new Error("Network error. Is the backend running?");
         }
     },
 
     // --- Auth ---
     async login(username, password) {
+        if (IS_GITHUB_PAGES) {
+            // Transparently handle login in static mode
+            return { access_token: 'demo-token', token_type: 'bearer' };
+        }
         const formData = new URLSearchParams();
         formData.append("username", username);
         formData.append("password", password);
@@ -656,7 +675,7 @@ const ApiService = {
     async getScrapedScholarships() {
         if (IS_GITHUB_PAGES) {
             // Load pre-scraped snapshot for static deployment
-            const resp = await fetch('scraped_data/snapshot_scholarships.json');
+            const resp = await fetch(`${BASE_PATH}scraped_data/snapshot_scholarships.json`);
             if (!resp.ok) throw new Error('Snapshot not available');
             return resp.json();
         }
@@ -665,7 +684,7 @@ const ApiService = {
 
     async getScrapedInternships() {
         if (IS_GITHUB_PAGES) {
-            const resp = await fetch('scraped_data/snapshot_internships.json');
+            const resp = await fetch(`${BASE_PATH}scraped_data/snapshot_internships.json`);
             if (!resp.ok) throw new Error('Snapshot not available');
             return resp.json();
         }

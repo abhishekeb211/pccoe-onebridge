@@ -1,0 +1,23 @@
+[
+    {
+        "id": "notif_1",
+        "title": "New Scholarship Verified",
+        "message": "NHFDC 2026 Batch Application is now open. AI Matcher score: 98%.",
+        "type": "scholarship",
+        "timestamp": "2 mins ago"
+    },
+    {
+        "id": "notif_2",
+        "title": "Success Story Update",
+        "message": "Ekjot Singh won Gold at Special Olympics Bharat! New case study added.",
+        "type": "achievement",
+        "timestamp": "1 hour ago"
+    },
+    {
+        "id": "notif_3",
+        "title": "Gov Career Alert",
+        "message": "ISRO recruitment drive for PwBD scientists (GATE 2025). Check 'Hire Me'.",
+        "type": "job",
+        "timestamp": "3 hours ago"
+    }
+]

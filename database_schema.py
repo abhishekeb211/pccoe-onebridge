@@ -10,9 +10,12 @@ load_dotenv()
 
 # Standard PostgreSQL connection format for Supabase:
 # postgresql://postgres:[PASSWORD]@db.[PROJECT_REF].supabase.co:5432/postgres
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/postgres")
+# Fallback to local SQLite for development if DATABASE_URL is not set
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    DATABASE_URL = "sqlite:///./onebridge.db"
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

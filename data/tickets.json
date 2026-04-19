@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "student_prn": "1032210001",
+    "category": "IT Technical Support (WiFi, LMS, Passwords)",
+    "description": "Final functional verification of the help desk system.",
+    "status": "Submitted",
+    "predicted_department": "IT Technical Support (WiFi, LMS, Passwords)",
+    "assigned_to": "human_triage_queue",
+    "urgent_flag": false,
+    "created_at": "2026-04-18T16:11:08.673312+00:00"
+  }
+]

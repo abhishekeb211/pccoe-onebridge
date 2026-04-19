@@ -1,6 +1,6 @@
 import logging
 from enum import Enum
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from sqlalchemy.orm import Session
 
 # Phase 18 / 19 / 20: Ticket Smart Routing, State Lifecycle, and Escalation Mechanisms
@@ -58,7 +58,7 @@ class TicketEngine:
         Flags SLA breaches automatically overriding standard local priority.
         When db is provided, queries and updates tickets directly in Supabase.
         """
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         escalated_count = 0
 
         if db is not None:
@@ -68,10 +68,16 @@ class TicketEngine:
             ).all()
 
             for ticket in open_tickets:
-                if ticket.created_at and (now - ticket.created_at).days >= self.SLA_DAYS_LIMIT:
-                    logger.critical(f"SLA Breach Intercepted for Ticket #{ticket.id}. Bumping to Faculty Override.")
-                    ticket.status = DBTicketStatus.ESCALATED
-                    escalated_count += 1
+                if ticket.created_at:
+                    # Handle comparison between aware 'now' and potentially naive 'created_at' (SQLite)
+                    created_at = ticket.created_at
+                    if created_at.tzinfo is None:
+                        created_at = created_at.replace(tzinfo=UTC)
+                    
+                    if (now - created_at).days >= self.SLA_DAYS_LIMIT:
+                        logger.critical(f"SLA Breach Intercepted for Ticket #{ticket.id}. Bumping to Faculty Override.")
+                        ticket.status = DBTicketStatus.ESCALATED
+                        escalated_count += 1
 
             if escalated_count > 0:
                 db.commit()

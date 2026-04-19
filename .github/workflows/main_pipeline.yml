@@ -53,9 +53,14 @@ jobs:
             | grep -v '.env.example' | grep -v 'dummy-development' | grep -v 'development-secret' | grep -v 'your-' \
             || echo "No leaked keys found."
 
+      - name: Install Frontend Dependencies
+        run: npm install
+
       - name: Frontend Audits
         run: |
-          echo "Running stylelint, htmlhint and pa11y automated sweeps (WCAG 2.1 AA)..."
+          npx htmlhint index.html
+          npx stylelint styles.css
+          npx pa11y index.html --threshold 500
 
       - name: Run Backend Tests
         run: |

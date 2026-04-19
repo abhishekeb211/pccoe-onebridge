@@ -1,0 +1,322 @@
+{
+  "achievers": [
+    {
+      "id": "new_1",
+      "name": "Ravi Raj",
+      "disability": "Visually Impaired",
+      "achievement": "AIR 20 in UPSC CSE 2025. His mother became his 'eyes,' reading textbooks to him daily.",
+      "category": "government",
+      "year": "2025",
+      "icon": "fa-user-graduate"
+    },
+    {
+      "id": "new_2",
+      "name": "Athira Sugathan",
+      "disability": "Paralysis & Memory Loss",
+      "achievement": "Rank 483 in UPSC CSE 2025 after a 2016 accident left her wheelchair-bound.",
+      "category": "government",
+      "year": "2025",
+      "icon": "fa-wheelchair"
+    },
+    {
+      "id": "new_3",
+      "name": "Manvendra Singh",
+      "disability": "Cerebral Palsy",
+      "achievement": "AIR 112 in UPSC Engineering Services Examination (ESE), IIT Patna graduate.",
+      "category": "engineering",
+      "year": "2025",
+      "icon": "fa-brain"
+    },
+    {
+      "id": "new_4",
+      "name": "Rahul Bajaj",
+      "disability": "Visually Impaired",
+      "achievement": "India's first visually impaired Rhodes Scholar, now at Oxford.",
+      "category": "international",
+      "year": "2025",
+      "icon": "fa-book-open"
+    },
+    {
+      "id": "new_5",
+      "name": "Deepthi Jeevanji",
+      "disability": "Intellectual Disability",
+      "achievement": "Arjuna Awardee, BBC Indian Sportswoman of the Year 2025 nominee, Paralympic hopeful.",
+      "category": "sports",
+      "year": "2025",
+      "icon": "fa-medal"
+    },
+    {
+      "id": "new_6",
+      "name": "Saurav Kumar",
+      "disability": "Lower-limb Disability",
+      "achievement": "IIT Roorkee graduate, national para swimming star with 2 silver medals in 3 months.",
+      "category": "sports",
+      "year": "2025",
+      "icon": "fa-swimmer"
+    },
+    {
+      "id": "new_7",
+      "name": "Arvind Rao",
+      "disability": "75% disability (Cerebral Palsy)",
+      "achievement": "Delhi High Court advocate, Supreme Court victory on student rights.",
+      "category": "law",
+      "year": "2025",
+      "icon": "fa-gavel"
+    },
+    {
+      "id": "new_8",
+      "name": "Hunny Bhagchandani",
+      "disability": "Advocate for disability tech",
+      "achievement": "Forbes Asia 30 Under 30 (2025), founder of TorchIt (3 lakh+ users across 40+ countries).",
+      "category": "business",
+      "year": "2025",
+      "icon": "fa-lightbulb"
+    },
+    {
+      "id": "new_9",
+      "name": "Anandita Kumar",
+      "disability": "Cerebral Palsy & heart defect",
+      "achievement": "Music therapist at the special school that once supported her.",
+      "category": "arts",
+      "year": "2025",
+      "icon": "fa-music"
+    },
+    {
+      "id": "new_10",
+      "name": "Ekjot Singh",
+      "disability": "50% permanent brain disability",
+      "achievement": "Gold medal in powerlifting at Special Olympics Bharat.",
+      "category": "sports",
+      "year": "2025",
+      "icon": "fa-dumbbell"
+    },
+    {
+      "id": "new_11",
+      "name": "Preeti Pal",
+      "disability": "Double Paralympic bronze medallist",
+      "achievement": "Second gold at World Para Athletics Grand Prix 2026.",
+      "category": "sports",
+      "year": "2026",
+      "icon": "fa-award"
+    },
+    {
+      "id": "new_12",
+      "name": "Sumit Antil",
+      "disability": "Paralympic champion",
+      "achievement": "Gold in Men's Javelin at World Para Athletics Grand Prix 2026 (69.25m throw).",
+      "category": "sports",
+      "year": "2026",
+      "icon": "fa-running"
+    },
+    {
+      "id": "new_13",
+      "name": "Irfan Ahmad Lone",
+      "disability": "Visually impaired",
+      "achievement": "Cracked UPSC CSE 2025 from Bandipora.",
+      "category": "government",
+      "year": "2025",
+      "icon": "fa-user-tie"
+    },
+    {
+      "id": "new_14",
+      "name": "A Abdullah Afridh",
+      "disability": "Multiple disabilities",
+      "achievement": "AIR 942 in UPSC CSE 2025 on first attempt.",
+      "category": "government",
+      "year": "2025",
+      "icon": "fa-star"
+    },
+    {
+      "id": "new_15",
+      "name": "Maya Bhammar",
+      "disability": "Polio since age 6",
+      "achievement": "Silver at 23rd Senior National Para Powerlifting Championship 2025–26.",
+      "category": "sports",
+      "year": "2025",
+      "icon": "fa-medal"
+    },
+    {
+      "id": "new_16",
+      "name": "Ruchita Sahukari",
+      "disability": "Brittle bone disease (90% disability)",
+      "achievement": "Now studying journalism at IIMC after being denied schooling until 18.",
+      "category": "journalism",
+      "year": "2025",
+      "icon": "fa-newspaper"
+    }
+  ],
+  "legends": [
+    {
+      "id": "leg_1",
+      "name": "Ira Singhal",
+      "disability": "Scoliosis",
+      "achievement": "AIR 1 in UPSC CSE 2014, first woman with disability to top the exam.",
+      "icon": "fa-crown"
+    },
+    {
+      "id": "leg_2",
+      "name": "Arunima Sinha",
+      "disability": "Amputee (left leg)",
+      "achievement": "First Indian female amputee to climb Mount Everest.",
+      "icon": "fa-mountain"
+    },
+    {
+      "id": "leg_3",
+      "name": "Srikanth Bolla",
+      "disability": "Visually Impaired",
+      "achievement": "Founder & CEO of Bollant Industries (₹50+ Crore), MIT graduate.",
+      "icon": "fa-briefcase"
+    },
+    {
+      "id": "leg_4",
+      "name": "Dr. Suresh Advani",
+      "disability": "Wheelchair user (Polio)",
+      "achievement": "Padma Bhushan awardee, pioneered Bone Marrow Transplants in India.",
+      "icon": "fa-user-doctor"
+    },
+    {
+      "id": "leg_5",
+      "name": "Sai Prasad Vishwanathan",
+      "disability": "No legs from birth",
+      "achievement": "First Indian with disability to earn a skydiving license, Google Engineer.",
+      "icon": "fa-parachute-box"
+    },
+    {
+      "id": "leg_6",
+      "name": "Pranjal Patil",
+      "disability": "Visually Impaired",
+      "achievement": "India's first blind woman IAS officer.",
+      "icon": "fa-building-columns"
+    }
+  ],
+  "featured_scholarships": [
+    {
+      "id": "schol_1",
+      "name": "Pre-Matric Scholarship (PwD)",
+      "provider": "Ministry of Social Justice",
+      "eligibility": "Students with 40%+ disability, Class 1-10",
+      "benefit": "₹500-800/month + ₹1,000 annual book grant",
+      "category": "government"
+    },
+    {
+      "id": "schol_2",
+      "name": "Post-Matric Scholarship (PwD)",
+      "provider": "Ministry of Social Justice",
+      "eligibility": "Students with 40%+ disability, Class 11-PhD",
+      "benefit": "₹1,600-2,000/month + allowances",
+      "category": "government"
+    },
+    {
+      "id": "schol_3",
+      "name": "Top Class Education for PwD",
+      "provider": "Ministry of Social Justice",
+      "eligibility": "Students with 40%+ disability at premier institutions",
+      "benefit": "Full tuition fee + maintenance",
+      "category": "premium"
+    },
+    {
+      "id": "schol_4",
+      "name": "NHFDC Scholarship",
+      "provider": "National Handicapped Finance",
+      "eligibility": "Professional/technical degree courses",
+      "benefit": "Up to ₹1 lakh/year for tuition/books",
+      "category": "technical"
+    },
+    {
+      "id": "schol_5",
+      "name": "AICTE Saksham Scholarship",
+      "provider": "AICTE",
+      "eligibility": "Technical degree/diploma courses",
+      "benefit": "₹50,000/year tuition + ₹20,000 incidentals",
+      "category": "technical"
+    },
+    {
+      "id": "schol_6",
+      "name": "Google Disability Scholarship",
+      "provider": "Google",
+      "eligibility": "Students with disabilities in CS/Tech",
+      "benefit": "$10,000 USD + retreat at Google HQ",
+      "category": "private"
+    },
+    {
+      "id": "schol_7",
+      "name": "Microsoft Disability Scholarship",
+      "provider": "Microsoft",
+      "eligibility": "High school seniors planning tech careers",
+      "benefit": "$20,000 USD over 4 years",
+      "category": "private"
+    },
+    {
+      "id": "schol_8",
+      "name": "JN Tata Endowment Loan",
+      "provider": "JN Tata Trust",
+      "eligibility": "Higher education abroad",
+      "benefit": "Loan scholarship up to ₹10 lakhs",
+      "category": "international"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "SwarajAbility",
+      "details": "AI-Powered livelihood platform for PwDs. World's first AI-driven job hunt assistant for inclusion.",
+      "tag": "AI-Powered"
+    },
+    {
+      "name": "Sugamya Bharat",
+      "details": "AI-Optimized accessibility tracker & job portal for government inclusion.",
+      "tag": "AI-Driven"
+    },
+    {
+      "name": "NCS Portal",
+      "details": "Unified Government Career Service with mandatory PwD job quotas.",
+      "tag": "Government"
+    }
+  ],
+  "skill_pathways": [
+    {
+      "category": "Digital Literacy",
+      "platform": "NDLM",
+      "details": "Screen reader compatible, sign language videos. Gov recognized.",
+      "tag": "Government"
+    },
+    {
+      "category": "Programming (Python)",
+      "platform": "Coursera",
+      "details": "Financial aid available. Screen reader support university certificates.",
+      "tag": "Technical"
+    },
+    {
+      "category": "Data Entry/Excel",
+      "platform": "Enable Academy",
+      "details": "JAWS/NVDA compatible, industry recognized certification.",
+      "tag": "Professional"
+    }
+  ],
+  "emergency_contacts": [
+    {"service": "Sugamya Bharat Helpline", "contact": "1800-11-9393"},
+    {"service": "Kiran Mental Health", "contact": "1800-599-0019"},
+    {"service": "National Disability Help", "contact": "1800-11-9393"}
+  ],
+  "motivational_insights": [
+    {
+      "text": "Your disability is an opportunity to find your own unique strengths.",
+      "author": "Ravi Raj (AIR 20, UPSC 2025)"
+    },
+    {
+      "text": "The only limit to our realization of tomorrow will be our doubts of today.",
+      "author": "Franklin D. Roosevelt"
+    },
+    {
+      "text": "Inclusion is not a matter of political correctness. It is the key to growth.",
+      "author": "OneBridge AI"
+    },
+    {
+      "text": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+      "author": "Winston Churchill"
+    },
+    {
+      "text": "I don't have a disability, I have a different ability.",
+      "author": "Robert M. Hensel"
+    }
+  ]
+}

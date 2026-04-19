@@ -1,34 +1,22 @@
 from fastapi import FastAPI, Request, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+import os
+import json
 import time
 import datetime
 import json
 from pydantic import BaseModel
 from typing import Optional, List
+from sqlalchemy.orm import Session
 
 # Project Imports
-import auth
+from database_schema import (
+    SessionLocal, StudentProfile, Opportunity, SupportTicket, 
+    FacilityBooking, Notification, KnowledgeBaseArticle, KBCategory, TicketStatus
+)
 from auth import get_current_student
 from role_manager import RequireEOCAdmin, RequireFaculty, RequireStudent
-from database_schema import (
-    SessionLocal, engine, init_db, StudentProfile, SupportTicket, TicketStatus,
-    Opportunity, FacilityBooking, Notification, KnowledgeBaseArticle, KBCategory,
-    ChatConversation, ChatMessage, LiveEscalation, EscalationStatus,
-    ScholarshipScheme, ScholarshipCriteria, StudentEligibility, CasteCategory, BranchEnum,
-    StudentOpportunityMatch, ApplicationRecord, ApplicationDocument,
-    ApplicationStatusEnum, CareerListing, ReadinessReview,
-    FacultyEndorsement, ApprovalStatusEnum,
-    CampusResource, ResourceBooking, BookingStatusEnum,
-    ConfidentialGrievance,
-    DisabilityRequest, DisabilityRequestType,
-    AccessibilityAlert, AccessibilityAudit,
-    InclusionReport,
-    IntegrationTestRun,
-    SecurityEvent,
-    DeploymentRecord,
-)
 try:
     from local_agent import local_agent
 except ImportError:
@@ -42,8 +30,7 @@ except ImportError:
 
 from ticket_lifecycle import lifecycle_manager
 
-# Initialize Database on startup (Supabase/Postgres)
-init_db()
+
 
 app = FastAPI(
     title="PCCOE OneBridge API",
@@ -54,31 +41,32 @@ app = FastAPI(
 # 1. CORS Policy Configuration
 origins = [
     "http://localhost",
+    "http://localhost:3000",
     "http://localhost:5500",
+    "http://localhost:5501",
     "http://localhost:8080",
     "http://127.0.0.1",
+    "http://127.0.0.1:3000",
     "http://127.0.0.1:5500",
-    "https://abhishekeb211.github.io", 
+    "http://127.0.0.1:5501",
+    "http://0.0.0.0",
+    "https://abhishekeb211.github.io",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
-# DB Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
-# Connect Phase 9 Auth Module globally
-app.include_router(auth.router)
+# DB Dependency stub (no-op)
+def get_db():
+    raise NotImplementedError("Database is removed. Use JSON file storage.")
+
+
 
 # 2. Middleware for Performance Tracking
 @app.middleware("http")
@@ -115,57 +103,84 @@ class FacilityBookingRequest(BaseModel):
     accessibility_override: bool = False
 
 # 4. Routing logic
-@app.post("/api/v1/tickets", tags=["Module A: Smart Routing"])
-async def submit_ticket(payload: TicketSubmission, db: Session = Depends(get_db)):
-    """
-    Submits student ticket. Routes securely via Local NLP Agent and handles Supabase DB persistence.
-    """
-    # 1. Verify Student Existence
-    student = db.query(StudentProfile).filter(StudentProfile.prn == payload.student_prn).first()
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found in OneBridge Registry")
 
-    # 2. AI Classification (Local Agent)
+# JSON-based implementation (no DB, no auth)
+@app.post("/api/v1/tickets", tags=["Module A: Smart Routing"])
+async def submit_ticket(payload: TicketSubmission):
+    """
+    Submits student ticket. Routes securely via Local NLP Agent and handles JSON file persistence.
+    """
+    # Load students
+    students_path = os.path.join("data", "students.json")
+    tickets_path = os.path.join("data", "tickets.json")
+    notifications_path = os.path.join("data", "notifications.json")
+    if not os.path.exists(students_path):
+        return JSONResponse(status_code=500, content={"error": "students.json not found"})
+    with open(students_path, "r", encoding="utf-8") as f:
+        students = json.load(f)
+    student = next((s for s in students if s["prn"] == payload.student_prn), None)
+    if not student:
+        return JSONResponse(status_code=404, content={"error": "Student not found in OneBridge Registry"})
+
+    # AI Classification (Local Agent)
     routing_data = {"predicted_department": "General", "confidence_score": 1.0}
     if local_agent:
         routing_data = local_agent.classify_ticket(payload.description)
-    
-    # 3. Phase 18 auto assignment logic
+
+    # Assignment logic
     assignment = lifecycle_manager.assign_coordinator(
         routing_data['confidence_score'], 
         routing_data['predicted_department']
     )
 
-    # 4. Persistence to Supabase
-    new_ticket = SupportTicket(
-        student_id=student.id,
-        category=routing_data['predicted_department'],
-        description=payload.description,
-        status=TicketStatus.SUBMITTED,
-        predicted_department_id=routing_data['predicted_department'],
-        assigned_to=assignment,
-    )
-    
-    db.add(new_ticket)
-    db.commit()
-    db.refresh(new_ticket)
-    
-    # Auto-create notification for the student
-    notif = Notification(
-        student_id=student.id,
-        title="Ticket Submitted",
-        message=f"Ticket #{new_ticket.id} routed to {routing_data['predicted_department']}.",
-        type="info",
-    )
-    db.add(notif)
-    db.commit()
+    # Load tickets
+    if os.path.exists(tickets_path):
+        with open(tickets_path, "r", encoding="utf-8") as f:
+            tickets = json.load(f)
+    else:
+        tickets = []
+    new_ticket_id = (max([t["id"] for t in tickets], default=0) + 1) if tickets else 1
+    new_ticket = {
+        "id": new_ticket_id,
+        "student_prn": student["prn"],
+        "category": routing_data['predicted_department'],
+        "description": payload.description,
+        "status": "Submitted",
+        "predicted_department": routing_data['predicted_department'],
+        "assigned_to": assignment,
+        "urgent_flag": False,
+        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
+    }
+    tickets.append(new_ticket)
+    with open(tickets_path, "w", encoding="utf-8") as f:
+        json.dump(tickets, f, indent=2)
+
+    # Notification
+    if os.path.exists(notifications_path):
+        with open(notifications_path, "r", encoding="utf-8") as f:
+            notifications = json.load(f)
+    else:
+        notifications = []
+    notif_id = (max([n["id"] for n in notifications], default=0) + 1) if notifications else 1
+    notif = {
+        "id": notif_id,
+        "student_prn": student["prn"],
+        "title": "Ticket Submitted",
+        "message": f"Ticket #{new_ticket_id} routed to {routing_data['predicted_department']}.",
+        "type": "info",
+        "is_read": False,
+        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
+    }
+    notifications.append(notif)
+    with open(notifications_path, "w", encoding="utf-8") as f:
+        json.dump(notifications, f, indent=2)
 
     return {
-        "ticket_id": new_ticket.id,
-        "status": new_ticket.status.value,
+        "ticket_id": new_ticket_id,
+        "status": new_ticket["status"],
         "assigned_to": assignment,
         "analytics": routing_data,
-        "timestamp": datetime.datetime.now(datetime.UTC).isoformat()
+        "timestamp": new_ticket["created_at"]
     }
 
 @app.get("/api/v1/opportunities/matches", tags=["Module C/D/E: AI Match Engines"])

@@ -1,135 +1,126 @@
 """
-Shared pytest configuration and fixtures for PCCOE OneBridge test suite.
+Shared pytest configuration and fixtures for PCCOE OneBridge test suite (JSON version).
 
-Central test infrastructure: SQLite in-memory engine, session management,
-seed helpers, and test ordering. All DB test files import from here
-instead of defining their own engine/session boilerplate.
+All test utilities and seed helpers now use JSON file storage for test data setup and teardown.
+No database, engine, or ORM dependencies remain. All test data is isolated per test.
 """
 import os
 import sys
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import json
+import shutil
+import tempfile
 
 # ── Environment ──────────────────────────────────────────────────────────────
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# Override DATABASE_URL before any project imports that read it
-os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
+# Directory for test JSON data (isolated per test)
+TEST_DATA_DIR = os.path.join(PROJECT_ROOT, "tests", "test_data")
 
-from database_schema import (                          # noqa: E402
-    Base, StudentProfile, BranchEnum,
-    CampusResource, ApplicationRecord, ApplicationStatusEnum, Opportunity,
-)
+def _reset_test_data():
+    if os.path.exists(TEST_DATA_DIR):
+        shutil.rmtree(TEST_DATA_DIR)
+    os.makedirs(TEST_DATA_DIR, exist_ok=True)
 
-# ── Shared Engine & Session ──────────────────────────────────────────────────
-engine = create_engine("sqlite:///:memory:")
-Session = sessionmaker(bind=engine)
+def _write_json(filename, data):
+    with open(os.path.join(TEST_DATA_DIR, filename), "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
-
-def fresh_db():
-    """Drop and recreate all tables, return a new session.
-
-    Used by unittest-style tests that call fresh_db() in setUp / per-test.
-    """
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-    return Session()
-
+def _read_json(filename):
+    path = os.path.join(TEST_DATA_DIR, filename)
+    if not os.path.exists(path):
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 # ── Pytest Fixtures ──────────────────────────────────────────────────────────
 @pytest.fixture(autouse=True)
-def setup_db():
-    """Autouse: create tables before every test, drop them after."""
-    Base.metadata.create_all(bind=engine)
+def setup_json_data():
+    """Autouse: reset test JSON data before every test."""
+    _reset_test_data()
     yield
-    Base.metadata.drop_all(bind=engine)
+    _reset_test_data()
 
-
-@pytest.fixture
-def db():
-    """Yield a per-test SQLAlchemy session with automatic close."""
-    session = Session()
-    yield session
-    session.close()
-
-
-# ── Seed Helpers ─────────────────────────────────────────────────────────────
-def seed_student(db, prn="TEST001", name="Test Student", *,
-                 branch=BranchEnum.COMP_ENG, year_of_study=2, role="student",
+# ── Seed Helpers (JSON) ─────────────────────────────────────────────────────
+def seed_student(prn="TEST001", name="Test Student", *,
+                 branch="Computer Engineering", year_of_study=2, role="student",
                  email=None, has_disability=False, is_disadvantaged=False,
                  password_hash="fakehash"):
-    """Insert and return a StudentProfile.  Accepts keyword overrides."""
-    s = StudentProfile(
-        prn=prn,
-        name=name,
-        email=email or f"{prn.lower()}@pccoe.org",
-        branch=branch,
-        year_of_study=year_of_study,
-        role=role,
-        has_disability=has_disability,
-        is_disadvantaged=is_disadvantaged,
-        password_hash=password_hash,
-    )
-    db.add(s)
-    db.commit()
-    db.refresh(s)
-    return s
+    """Insert and return a student dict into students.json."""
+    students = _read_json("students.json")
+    student = {
+        "id": len(students) + 1,
+        "prn": prn,
+        "name": name,
+        "email": email or f"{prn.lower()}@pccoe.org",
+        "branch": branch,
+        "year_of_study": year_of_study,
+        "role": role,
+        "has_disability": has_disability,
+        "is_disadvantaged": is_disadvantaged,
+        "password_hash": password_hash,
+    }
+    students.append(student)
+    _write_json("students.json", students)
+    return student
 
 
-def seed_faculty(db, prn="FAC001", name="Dr. Faculty"):
-    """Insert and return a faculty-role StudentProfile."""
-    return seed_student(db, prn=prn, name=name, role="faculty")
+def seed_faculty(prn="FAC001", name="Dr. Faculty"):
+    """Insert and return a faculty-role student dict."""
+    return seed_student(prn=prn, name=name, role="faculty")
 
 
-def seed_resource(db, name="AI Lab", rtype="lab", capacity=30, accessible=True):
-    """Insert and return a CampusResource."""
-    r = CampusResource(
-        name=name,
-        building="Main Block",
-        floor="2",
-        resource_type=rtype,
-        seating_capacity=capacity,
-        is_accessible=accessible,
-    )
-    db.add(r)
-    db.commit()
-    db.refresh(r)
-    return r
+def seed_resource(name="AI Lab", rtype="lab", capacity=30, accessible=True):
+    """Insert and return a resource dict into resources.json."""
+    resources = _read_json("resources.json")
+    resource = {
+        "id": len(resources) + 1,
+        "name": name,
+        "building": "Main Block",
+        "floor": "2",
+        "resource_type": rtype,
+        "seating_capacity": capacity,
+        "is_accessible": accessible,
+    }
+    resources.append(resource)
+    _write_json("resources.json", resources)
+    return resource
 
 
-def seed_opportunity(db, title="Google STEP Internship",
+def seed_opportunity(title="Google STEP Internship",
                      branches="Computer Engineering", years="3,4"):
-    """Insert and return an Opportunity."""
+    """Insert and return an opportunity dict into opportunities.json."""
     from datetime import datetime, timezone, timedelta
-    o = Opportunity(
-        title=title,
-        type="internship",
-        target_branches=branches,
-        target_years=years,
-        deadline=datetime.now(timezone.utc) + timedelta(days=30),
-    )
-    db.add(o)
-    db.commit()
-    db.refresh(o)
-    return o
+    opportunities = _read_json("opportunities.json")
+    opportunity = {
+        "id": len(opportunities) + 1,
+        "title": title,
+        "type": "internship",
+        "target_branches": branches,
+        "target_years": years,
+        "deadline": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat(),
+    }
+    opportunities.append(opportunity)
+    _write_json("opportunities.json", opportunities)
+    return opportunity
 
 
-def seed_application(db, student, opportunity_id=1, title="Test Opportunity"):
-    """Insert and return an ApplicationRecord."""
-    a = ApplicationRecord(
-        student_id=student.id,
-        opportunity_id=opportunity_id,
-        opportunity_type="opportunity",
-        opportunity_title=title,
-        status=ApplicationStatusEnum.APPLIED,
-    )
-    db.add(a)
-    db.commit()
-    db.refresh(a)
-    return a
+def seed_application(student, opportunity_id=1, title="Test Opportunity"):
+    """Insert and return an application dict into applications.json."""
+    applications = _read_json("applications.json")
+    application = {
+        "id": len(applications) + 1,
+        "student_id": student["id"],
+        "opportunity_id": opportunity_id,
+        "opportunity_type": "opportunity",
+        "opportunity_title": title,
+        "status": "Applied",
+    }
+    applications.append(application)
+    _write_json("applications.json", applications)
+    return application
 
 
 # ── Test Ordering ────────────────────────────────────────────────────────────

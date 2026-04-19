@@ -8,7 +8,7 @@ Phase 17-20 Verification Tests
 import os
 import sys
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from unittest.mock import patch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -83,7 +83,7 @@ class TestEscalation(unittest.TestCase):
         old_ticket = SupportTicket(
             student_id=student.id, category="academic", description="old request",
             status=TicketStatus.SUBMITTED, predicted_department_id="academic",
-            created_at=datetime.utcnow() - timedelta(days=5)
+            created_at=datetime.now(UTC) - timedelta(days=5)
         )
         db.add(old_ticket)
         db.commit()
@@ -108,7 +108,7 @@ class TestEscalation(unittest.TestCase):
         new_ticket = SupportTicket(
             student_id=student.id, category="tech", description="new request",
             status=TicketStatus.SUBMITTED, predicted_department_id="tech",
-            created_at=datetime.utcnow()
+            created_at=datetime.now(UTC)
         )
         db.add(new_ticket)
         db.commit()

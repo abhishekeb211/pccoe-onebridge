@@ -439,7 +439,7 @@ def _dedupe_scholarships(items: list[dict]) -> list[dict]:
 def _dedupe_internships(items: list[dict]) -> list[dict]:
     seen = {}
     for item in items:
-        key = re.sub(r'[^a-z0-9]', '', f"{item['title']}{item['company']}".lower())[:50]
+        key = re.sub(r'[^a-z0-9]', '', f"{item.get('title','')}{item.get('company','')}".lower())[:50]
         if key not in seen:
             seen[key] = item
     result = list(seen.values())

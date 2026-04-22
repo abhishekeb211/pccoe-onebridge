@@ -8,9 +8,16 @@ __pycache__/
 env/
 venv/
 .pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
 
 # Node artifacts
 node_modules/
+coverage/
+playwright-report/
+test-results/
 
 # Databases & Logs
 *.db
@@ -20,6 +27,7 @@ test_results*.txt
 # Project Specific
 uploads/
 tests/test_data/
+scraped_data/
 
 # Environment
 .env

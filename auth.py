@@ -5,9 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
-
-from database_schema import SessionLocal, StudentProfile
+from json_db import db
+from database_schema import StudentProfile
 
 # Phase 9: Unified Student Auth & JWT Issuance
 
@@ -53,11 +52,7 @@ async def get_current_student(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
-    db = SessionLocal()
-    try:
-        student = db.query(StudentProfile).filter(StudentProfile.prn == prn).first()
-    finally:
-        db.close()
+    student = db.find_one(StudentProfile, prn=prn)
 
     if student is None:
         raise credentials_exception
@@ -85,14 +80,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     Academic SSO endpoint. Students use PCCOE email or PRN.
     Returns zero-knowledge JWT locking EOC capabilities.
     """
-    db = SessionLocal()
-    try:
-        # Look up student by email or PRN
-        student = db.query(StudentProfile).filter(
-            (StudentProfile.email == form_data.username) | (StudentProfile.prn == form_data.username)
-        ).first()
-    finally:
-        db.close()
+    # Look up student by email or PRN
+    student = db.find_one(StudentProfile, email=form_data.username) or \
+              db.find_one(StudentProfile, prn=form_data.username)
 
     if not student:
         raise HTTPException(

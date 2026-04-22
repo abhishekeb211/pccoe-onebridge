@@ -1,18 +1,20 @@
-from fastapi import FastAPI, Request, Depends, HTTPException, Query
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import os
-import json
-import time
+from __future__ import annotations
+
 import datetime
 import json
-from pydantic import BaseModel
-from typing import Optional, List
-from sqlalchemy.orm import Session
+import os
+import time
+from typing import List, Optional
 
-# Project Imports
+import sentry_sdk
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+from json_db import db
 from database_schema import (
-    SessionLocal, StudentProfile, Opportunity, SupportTicket, 
+    StudentProfile, Opportunity, SupportTicket, 
     FacilityBooking, Notification, KnowledgeBaseArticle, KBCategory, TicketStatus
 )
 from auth import get_current_student
@@ -38,6 +40,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=0.1,
+        environment=os.getenv("ENVIRONMENT", "development"),
+    )
+    app.add_middleware(SentryAsgiMiddleware)
+
 # 1. CORS Policy Configuration
 origins = [
     "http://localhost",
@@ -62,9 +73,52 @@ app.add_middleware(
 )
 
 
-# DB Dependency stub (no-op)
+# DB dependency stub for JSON-backed runtime
 def get_db():
-    raise NotImplementedError("Database is removed. Use JSON file storage.")
+    return None
+
+
+JSON_STORAGE_FILES = {
+    "students": "students.json",
+    "tickets": "tickets.json",
+    "opportunities": "opportunities.json",
+    "facility_bookings": "facility_bookings.json",
+    "notifications": "notifications.json",
+    "knowledge_base": "knowledge_base.json",
+    "chat_conversations": "chat_conversations.json",
+    "chat_messages": "chat_messages.json",
+    "scholarships": "scholarships.json",
+    "applications": "applications.json",
+    "security_events": "security_events.json",
+    "resources": "resources.json",
+    "resource_bookings": "resource_bookings.json",
+}
+
+
+def _json_file_status(filename: str) -> dict:
+    path = os.path.join(db.data_dir, filename)
+    if not os.path.exists(path):
+        return {"status": "missing", "filename": filename, "records": 0}
+
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return {
+            "status": "healthy",
+            "filename": filename,
+            "records": len(data) if isinstance(data, list) else 1,
+        }
+    except (json.JSONDecodeError, OSError, TypeError, ValueError):
+        return {"status": "unhealthy", "filename": filename, "records": 0}
+
+
+def _json_storage_snapshot() -> dict:
+    return {name: _json_file_status(filename) for name, filename in JSON_STORAGE_FILES.items()}
+
+
+def _json_storage_ready(*keys: str) -> bool:
+    snapshot = _json_storage_snapshot()
+    return all(snapshot.get(key, {}).get("status") == "healthy" for key in keys)
 
 
 
@@ -110,15 +164,7 @@ async def submit_ticket(payload: TicketSubmission):
     """
     Submits student ticket. Routes securely via Local NLP Agent and handles JSON file persistence.
     """
-    # Load students
-    students_path = os.path.join("data", "students.json")
-    tickets_path = os.path.join("data", "tickets.json")
-    notifications_path = os.path.join("data", "notifications.json")
-    if not os.path.exists(students_path):
-        return JSONResponse(status_code=500, content={"error": "students.json not found"})
-    with open(students_path, "r", encoding="utf-8") as f:
-        students = json.load(f)
-    student = next((s for s in students if s["prn"] == payload.student_prn), None)
+    student = db.find_one(StudentProfile, prn=payload.student_prn)
     if not student:
         return JSONResponse(status_code=404, content={"error": "Student not found in OneBridge Registry"})
 
@@ -133,70 +179,50 @@ async def submit_ticket(payload: TicketSubmission):
         routing_data['predicted_department']
     )
 
-    # Load tickets
-    if os.path.exists(tickets_path):
-        with open(tickets_path, "r", encoding="utf-8") as f:
-            tickets = json.load(f)
-    else:
-        tickets = []
-    new_ticket_id = (max([t["id"] for t in tickets], default=0) + 1) if tickets else 1
-    new_ticket = {
-        "id": new_ticket_id,
-        "student_prn": student["prn"],
-        "category": routing_data['predicted_department'],
-        "description": payload.description,
-        "status": "Submitted",
-        "predicted_department": routing_data['predicted_department'],
-        "assigned_to": assignment,
-        "urgent_flag": False,
-        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
-    }
-    tickets.append(new_ticket)
-    with open(tickets_path, "w", encoding="utf-8") as f:
-        json.dump(tickets, f, indent=2)
+    new_ticket = SupportTicket(
+        id=0, # Auto-increment handled by json_db
+        student_id=student.id,
+        category=routing_data['predicted_department'],
+        description=payload.description,
+        status=TicketStatus.SUBMITTED,
+        predicted_department_id=routing_data['predicted_department'],
+        assigned_to=assignment,
+        urgent_flag=False,
+    )
+    db.insert(new_ticket)
 
     # Notification
-    if os.path.exists(notifications_path):
-        with open(notifications_path, "r", encoding="utf-8") as f:
-            notifications = json.load(f)
-    else:
-        notifications = []
-    notif_id = (max([n["id"] for n in notifications], default=0) + 1) if notifications else 1
-    notif = {
-        "id": notif_id,
-        "student_prn": student["prn"],
-        "title": "Ticket Submitted",
-        "message": f"Ticket #{new_ticket_id} routed to {routing_data['predicted_department']}.",
-        "type": "info",
-        "is_read": False,
-        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
-    }
-    notifications.append(notif)
-    with open(notifications_path, "w", encoding="utf-8") as f:
-        json.dump(notifications, f, indent=2)
+    notif = Notification(
+        id=0,
+        student_id=student.id,
+        title="Ticket Submitted",
+        message=f"Ticket #{new_ticket.id} routed to {routing_data['predicted_department']}.",
+        type="info",
+        is_read=False,
+    )
+    db.insert(notif)
 
     return {
-        "ticket_id": new_ticket_id,
-        "status": new_ticket["status"],
+        "ticket_id": new_ticket.id,
+        "status": new_ticket.status,
         "assigned_to": assignment,
         "analytics": routing_data,
-        "timestamp": new_ticket["created_at"]
+        "timestamp": new_ticket.created_at.isoformat()
     }
 
 @app.get("/api/v1/opportunities/matches", tags=["Module C/D/E: AI Match Engines"])
 async def fetch_matches(
     student_prn: str = Query(..., description="Student PRN for filtering"),
-    db: Session = Depends(get_db)
 ):
     """
     Fetches opportunities matched to a student's branch, year, and eligibility.
     """
-    student = db.query(StudentProfile).filter(StudentProfile.prn == student_prn).first()
+    student = db.find_one(StudentProfile, prn=student_prn)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found in OneBridge Registry")
 
     # Query opportunities matching the student's branch and year
-    opportunities = db.query(Opportunity).all()
+    opportunities = db.get_all(Opportunity)
 
     matched = []
     for opp in opportunities:
@@ -217,17 +243,17 @@ async def fetch_matches(
     return {"student_prn": student_prn, "matches": matched, "count": len(matched)}
 
 @app.get("/api/v1/tickets/{student_prn}", tags=["Module A: Smart Routing"])
-async def get_student_tickets(student_prn: str, db: Session = Depends(get_db)):
+async def get_student_tickets(student_prn: str):
     """
     Retrieves all tickets for a specific student, ordered by creation date.
     """
-    student = db.query(StudentProfile).filter(StudentProfile.prn == student_prn).first()
+    student = db.find_one(StudentProfile, prn=student_prn)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found in OneBridge Registry")
 
-    tickets = db.query(SupportTicket).filter(
-        SupportTicket.student_id == student.id
-    ).order_by(SupportTicket.created_at.desc()).all()
+    tickets = db.find_many(SupportTicket, student_id=student.id)
+    # Sort by created_at descending
+    tickets.sort(key=lambda x: x.created_at, reverse=True)
 
     return {
         "student_prn": student_prn,
@@ -247,17 +273,18 @@ async def get_student_tickets(student_prn: str, db: Session = Depends(get_db)):
     }
 
 @app.post("/api/v1/eoc/secure-grievance", tags=["EOC Integration"])
-async def eoc_grievance(payload: GrievanceSubmission, db: Session = Depends(get_db)):
+async def eoc_grievance(payload: GrievanceSubmission):
     """
     Air-gapped grievance submission. Data NEVER leaves the local server.
     Hard-rejects any attempt to forward to external LLM services.
     """
-    student = db.query(StudentProfile).filter(StudentProfile.prn == payload.student_prn).first()
+    student = db.find_one(StudentProfile, prn=payload.student_prn)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found in OneBridge Registry")
 
     # Create ticket with EOC category — air-gapped, no external AI processing
     new_ticket = SupportTicket(
+        id=0,
         student_id=student.id,
         category="EOC Confidential: " + payload.category,
         description=payload.description,
@@ -265,10 +292,7 @@ async def eoc_grievance(payload: GrievanceSubmission, db: Session = Depends(get_
         predicted_department_id="vip_eoc_admin_1",
         urgent_flag=True,
     )
-
-    db.add(new_ticket)
-    db.commit()
-    db.refresh(new_ticket)
+    db.insert(new_ticket)
 
     return {
         "ticket_id": new_ticket.id,
@@ -279,11 +303,12 @@ async def eoc_grievance(payload: GrievanceSubmission, db: Session = Depends(get_
     }
 
 @app.get("/api/v1/facilities", tags=["Module F: Facilities"])
-async def list_facilities(db: Session = Depends(get_db)):
+async def list_facilities():
     """
     Lists all facility bookings with availability status.
     """
-    bookings = db.query(FacilityBooking).order_by(FacilityBooking.booking_time.desc()).all()
+    bookings = db.get_all(FacilityBooking)
+    bookings.sort(key=lambda x: x.booking_time, reverse=True)
 
     return {
         "facilities": [
@@ -650,34 +675,44 @@ try:
     _scheduler = BackgroundScheduler()
 
     def _run_escalation_audit():
-        db = SessionLocal()
-        try:
-            count = lifecycle_manager.audit_escalations(db=db)
-            if count > 0:
-                # Create notifications for escalated tickets
-                from database_schema import SupportTicket as DBTicket
-                escalated = db.query(DBTicket).filter(
-                    DBTicket.status == TicketStatus.ESCALATED
-                ).all()
-                for t in escalated:
-                    existing = db.query(Notification).filter(
-                        Notification.student_id == t.student_id,
-                        Notification.title == "Ticket Escalated",
-                        Notification.message.contains(str(t.id)),
-                    ).first()
-                    if not existing:
-                        notif = Notification(
-                            student_id=t.student_id,
-                            title="Ticket Escalated",
-                            message=f"Ticket #{t.id} escalated due to SLA breach ({lifecycle_manager.SLA_DAYS_LIMIT} day limit).",
-                            type="urgent",
-                        )
-                        db.add(notif)
-                db.commit()
-                import logging
-                logging.getLogger("OneBridge.Scheduler").info(f"Escalation audit: {count} tickets escalated.")
-        finally:
-            db.close()
+        count = lifecycle_manager.audit_escalations()
+        if count > 0:
+            escalated = [
+                ticket
+                for ticket in db.get_all(SupportTicket)
+                if ticket.status == TicketStatus.ESCALATED
+            ]
+            existing_notifications = db.get_all(Notification)
+
+            for ticket in escalated:
+                already_notified = any(
+                    notification.student_id == ticket.student_id
+                    and notification.title == "Ticket Escalated"
+                    and str(ticket.id) in notification.message
+                    for notification in existing_notifications
+                )
+                if already_notified:
+                    continue
+
+                created_notification = db.insert(
+                    Notification(
+                        id=0,
+                        student_id=ticket.student_id,
+                        title="Ticket Escalated",
+                        message=(
+                            f"Ticket #{ticket.id} escalated due to SLA breach "
+                            f"({lifecycle_manager.SLA_DAYS_LIMIT} day limit)."
+                        ),
+                        type="urgent",
+                    )
+                )
+                existing_notifications.append(created_notification)
+
+            import logging
+
+            logging.getLogger("OneBridge.Scheduler").info(
+                f"Escalation audit: {count} tickets escalated."
+            )
 
     _scheduler.add_job(_run_escalation_audit, "interval", hours=1, id="escalation_audit")
     _scheduler.start()
@@ -3165,8 +3200,6 @@ async def analytics_grievance_resolution(
     db: Session = Depends(get_db),
 ):
     """Analyze grievance and disability request resolution times."""
-    from sqlalchemy import func
-
     # Grievance resolution stats from ConfidentialGrievance
     grievances = db.query(ConfidentialGrievance).all()
     resolved_grievances = [g for g in grievances if g.resolved_at and g.created_at]
@@ -3703,39 +3736,28 @@ async def list_deployments(
 
 
 @app.get("/api/v1/system/health", tags=["Phase 40: Staging Launch"])
-async def system_health_check(
-    db: Session = Depends(get_db),
-):
+async def system_health_check():
     """Comprehensive system health check for go-live readiness."""
-    checks = {}
-
-    # Database connectivity
-    try:
-        from sqlalchemy import text as sa_text
-        db.execute(sa_text("SELECT 1"))
-        checks["database"] = "healthy"
-    except Exception:
-        checks["database"] = "unhealthy"
-
-    # Table existence check
-    from sqlalchemy import inspect
-    inspector = inspect(engine)
-    tables = inspector.get_table_names()
-    expected_tables = [
-        "students", "support_tickets", "opportunities", "facility_bookings",
-        "notifications", "knowledge_base_articles", "chat_conversations",
-        "scholarship_schemes", "campus_resources", "deployment_records",
-    ]
-    missing = [t for t in expected_tables if t not in tables]
-    checks["schema"] = "healthy" if not missing else f"missing: {', '.join(missing)}"
-
-    # Overall status
-    overall = "healthy" if all(v == "healthy" for v in checks.values()) else "degraded"
+    storage = _json_storage_snapshot()
+    critical_groups = {
+        "core_backend": ("students", "tickets", "notifications"),
+        "knowledge_base": ("knowledge_base", "chat_conversations", "chat_messages"),
+        "opportunities": ("opportunities", "scholarships", "applications"),
+        "resources": ("resources", "facility_bookings", "resource_bookings"),
+        "security": ("security_events",),
+    }
+    checks = {
+        name: "healthy" if _json_storage_ready(*keys) else "degraded"
+        for name, keys in critical_groups.items()
+    }
+    overall = "healthy" if all(value == "healthy" for value in checks.values()) else "degraded"
+    healthy_files = sum(1 for item in storage.values() if item["status"] == "healthy")
 
     return {
         "status": overall,
         "checks": checks,
-        "tables_found": len(tables),
+        "storage": storage,
+        "files_found": healthy_files,
         "version": "1.0.0-beta",
     }
 
@@ -3743,28 +3765,25 @@ async def system_health_check(
 @app.get("/api/v1/system/readiness", tags=["Phase 40: Staging Launch"])
 async def system_readiness_check(
     current_user: dict = Depends(get_current_student),
-    db: Session = Depends(get_db),
 ):
     """Go-live readiness checklist verifying all subsystems are functional."""
     user_roles = current_user.get("roles", [])
     if not any(r in user_roles for r in ["eoc_admin", "super_admin"]):
         raise HTTPException(status_code=403, detail="Admin access required")
 
-    from sqlalchemy import inspect
-    inspector = inspect(engine)
-    tables = inspector.get_table_names()
+    storage = _json_storage_snapshot()
 
     checklist = {
-        "core_backend": "students" in tables and "support_tickets" in tables,
-        "scholarship_system": "scholarship_schemes" in tables and "scholarship_criteria" in tables,
-        "career_module": "career_listings" in tables,
-        "resource_booking": "campus_resources" in tables and "resource_bookings" in tables,
-        "security_audit": "security_events" in tables,
-        "accessibility": "accessibility_audits" in tables and "accessibility_alerts" in tables,
-        "disability_support": "disability_requests" in tables,
-        "confidential_mode": "confidential_grievances" in tables,
-        "analytics": "inclusion_reports" in tables,
-        "deployment_tracking": "deployment_records" in tables,
+        "core_backend": _json_storage_ready("students", "tickets", "notifications"),
+        "scholarship_system": _json_storage_ready("scholarships", "applications"),
+        "career_module": _json_storage_ready("opportunities"),
+        "resource_booking": _json_storage_ready("resources", "resource_bookings"),
+        "security_audit": _json_storage_ready("security_events"),
+        "accessibility": _json_storage_ready("resources"),
+        "disability_support": _json_storage_ready("students", "notifications"),
+        "confidential_mode": _json_storage_ready("tickets", "notifications"),
+        "analytics": _json_storage_ready("students", "applications", "security_events"),
+        "deployment_tracking": _json_storage_ready("notifications"),
     }
 
     ready_count = sum(1 for v in checklist.values() if v)
@@ -3774,7 +3793,8 @@ async def system_readiness_check(
         "ready": ready_count == total,
         "score": f"{ready_count}/{total}",
         "checklist": {k: ("pass" if v else "fail") for k, v in checklist.items()},
-        "recommendation": "GO" if ready_count == total else "HOLD — fix failing subsystems",
+        "recommendation": "GO" if ready_count == total else "HOLD - fix failing subsystems",
+        "storage": storage,
     }
 
 
@@ -3841,3 +3861,4 @@ async def scraped_status():
     if not _scraper_available:
         raise HTTPException(status_code=503, detail="Scraper module not available")
     return get_scrape_status()
+

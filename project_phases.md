@@ -13,18 +13,18 @@ This document breaks down the entire PCCOE OneBridge platform development into 4
 
 ### Phase 2: System Architecture Design
 - **Function Summary:** Establish the blueprint for cloud infrastructure and local networks.
-- **Module Working:** Defines how the frontend browser communicates securely with the API gateway and database.
-- **Task:** Create architecture diagrams (UML, Data Flow Diagrams) detailing traffic flow.
+- **Module Working:** Defines how the frontend browser communicates securely with the API gateway and JSON registry.
+- **Task:** Create architecture diagrams (UML, Data Flow Diagrams) detailing traffic flow and file I/O.
 
 ### Phase 3: AI Strategy & Governance Selection
 - **Function Summary:** Determine the boundaries for the AI models.
 - **Module Working:** Distinguishes inputs handled by the Local Agent (privacy-first) versus external outputs required from Gemini via OpenRouter.
 - **Task:** Finalize API limits, data anonymization rules before LLM querying, and local NLP model selections.
 
-### Phase 4: Database Schema Engineering
-- **Function Summary:** Architect the relationship databases.
-- **Module Working:** Creates the core structures that store User Identities, Support Tickets, Scholarship criteria, and Facility attributes.
-- **Task:** Map out entity relationships (e.g., tying Student Profiles to Ticket ID arrays).
+### Phase 4: JSON Registry Engineering
+- **Function Summary:** Architect the flat-file persistence system.
+- **Module Working:** Creates the core JSON schemas that store User Identities, Support Tickets, Scholarship criteria, and Facility attributes.
+- **Task:** Map out logical relationships and Pydantic validation schemas (e.g., tying Student Profiles to Ticket ID arrays).
 
 ---
 
@@ -109,7 +109,7 @@ This document breaks down the entire PCCOE OneBridge platform development into 4
 
 ### Phase 18: Smart Routing Pipeline Implementation
 - **Function Summary:** Automatically assigning newly created tickets.
-- **Module Working:** Combines Phase 14's classifier with the Ticket Database to auto-assign a department coordinator.
+- **Module Working:** Combines Phase 14's classifier with the JSON Registry to auto-assign a department coordinator.
 - **Task:** Write the background worker function mapping confidence scores to direct re-routing.
 
 ### Phase 19: Ticket State Machine
@@ -128,7 +128,7 @@ This document breaks down the entire PCCOE OneBridge platform development into 4
 
 ### Phase 21: Help Desk Knowledge Base
 - **Function Summary:** The central FAQ repository.
-- **Module Working:** Basic text-searchable repository of common technical, academic, and campus questions.
+- **Module Working:** Basic text-searchable repository of common technical, academic, and campus questions stored in knowledge_base.json.
 - **Task:** Structure generic knowledge articles and develop the search indexing engine.
 
 ### Phase 22: Local NLP Chatbot Interface
@@ -147,8 +147,8 @@ This document breaks down the entire PCCOE OneBridge platform development into 4
 
 ### Phase 24: Scholarship Criteria Catalog Setup
 - **Function Summary:** Building the master list of opportunities.
-- **Module Working:** A highly structured database categorizing scholarships based on strict parameters (caste, income limit, GPA).
-- **Task:** Engineer the CMS (Content Management System) for admins to define new schemes.
+- **Module Working:** A highly structured registry categorizing scholarships based on strict parameters (caste, income limit, GPA).
+- **Task:** Engineer the JSON schemas for admins to define new schemes.
 
 ### Phase 25: AI Profile Matcher Generation
 - **Function Summary:** Aligning students to scholarships.
@@ -247,5 +247,5 @@ This document breaks down the entire PCCOE OneBridge platform development into 4
 
 ### Phase 40: Staging Launch & Early User Access
 - **Function Summary:** Deploying the robust system.
-- **Module Working:** Migrating from dev databases to a live mirrored infrastructure meant to absorb beta traffic.
-- **Task:** Transition server environments and perform the final 'Go-Live' operational manual.
+- **Module Working:** Migrating from dev registries to a live mirrored infrastructure meant to absorb beta traffic.
+- **Task:** Transition server environments and perform the final 'Go-Live' operational manual with production JSON seeding.

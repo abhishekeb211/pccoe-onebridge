@@ -1,37 +1,29 @@
-node_modules/
-.DS_Store
-.env
+# OneBridge Version Control Rules
 
-# Python
+# Python artifacts
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-*.egg-info/
-dist/
-build/
-
-# Virtual environments
-venv/
 .venv/
-
-# Database (local test DBs)
-*.db
-*.sqlite3
-
-# Testing
+env/
+venv/
 .pytest_cache/
-htmlcov/
-.coverage
-test_results.txt
 
-# IDE
-.idea/
-*.swp
-*~
+# Node artifacts
+node_modules/
 
-# OS
+# Databases & Logs
+*.db
+*.log
+test_results*.txt
+
+# Project Specific
+uploads/
+tests/test_data/
+
+# Environment
+.env
+
+# OS-specific
+.DS_Store
 Thumbs.db
-
-# Model cache
-.cache/

@@ -1,0 +1,29 @@
+{
+  "name": "pccoe-onebridge",
+  "version": "1.0.0",
+  "description": "Student Success & Inclusion Platform for PCCOE",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "htmlhint index.html && stylelint styles.css",
+    "audit": "pa11y index.html --threshold 500"
+  },
+  "author": "OneBridge Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "htmlhint": "^1.1.4",
+    "pa11y": "^9.1.1",
+    "stylelint": "^17.8.0",
+    "stylelint-config-standard": "^40.0.0"
+  },
+  "dependencies": {
+    "@sentry/browser": "^10.49.0",
+    "@sentry/replay": "^7.116.0"
+  }
+}

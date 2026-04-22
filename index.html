@@ -25,18 +25,18 @@
         <div class="mesh-circle" style="width: 500px; height: 500px; background: #38bdf8; top: 40%; left: 30%; opacity: 0.05;"></div>
     </div>
 
-    <header>
+    <header role="banner">
         <div class="container">
-            <nav>
-                <a href="#" class="logo">
+            <nav role="navigation" aria-label="Main Navigation">
+                <a href="#" class="logo" aria-label="OneBridge Home">
                     <i class="fa-solid fa-bridge-circle-check"></i>
                     <span>OneBridge</span>
                 </a>
-                <div class="nav-links">
-                    <a href="#beyond-limits">Hall of Fame</a>
-                    <a href="#learn-grow">Opportunities</a>
-                    <a href="#roadmap">Roadmap</a>
-                    <div id="pulse-hub" class="pulse-icon" title="OneBridge Pulse">
+                <div class="nav-links" role="menubar">
+                    <a href="#beyond-limits" role="menuitem" tabindex="0">Hall of Fame</a>
+                    <a href="#learn-grow" role="menuitem" tabindex="0">Opportunities</a>
+                    <a href="#roadmap" role="menuitem" tabindex="0">Roadmap</a>
+                    <div id="pulse-hub" class="pulse-icon" title="OneBridge Pulse" tabindex="0" aria-label="OneBridge Pulse Notifications" role="button">
                         <i class="fa-solid fa-bolt-lightning"></i>
                         <span class="pulse-badge">3</span>
                     </div>
@@ -47,7 +47,7 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="hero">
+        <section class="hero" aria-labelledby="hero-title">
             <div class="energy-wave">
                 <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
                     <path fill="var(--bg-secondary)" fill-opacity="0.5" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,149.3C672,149,768,203,864,213.3C960,224,1056,192,1152,165.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -55,7 +55,7 @@
             </div>
             <div class="container" style="position: relative; z-index: 2;">
                 <span class="badge motivational-float" style="display: inline-block;">Premium Excellence Ed.</span>
-                <h1 class="animate">Empower Your Academic Journey</h1>
+                <h1 class="animate" id="hero-title">Empower Your Academic Journey</h1>
                 <p class="animate" style="animation-delay: 0.1s;">A state-of-the-art digital ecosystem built to lift barriers, foster inclusion, and unlock your true potential.</p>
                 
                 <!-- AI Daily Insight -->
@@ -73,22 +73,22 @@
         </section>
 
         <!-- Navigation & Global Search -->
-        <div class="nav-control-layer">
-            <div class="main-nav-tabs">
+        <div class="nav-control-layer" role="region" aria-label="Main Navigation Tabs">
+            <div class="main-nav-tabs" role="tablist" aria-label="Primary sections">
                 <div id="tab-glider" class="tab-glider"></div>
-                <div class="main-tab active" data-tab="beyond-limits">
+                <div class="main-tab active" data-tab="beyond-limits" aria-label="Hall of Fame" aria-controls="beyond-limits" aria-selected="true" role="tab" tabindex="0">
                     <i class="fa-solid fa-trophy"></i> Beyond Limits
                 </div>
-                <div class="main-tab" data-tab="learn-grow">
+                <div class="main-tab" data-tab="learn-grow" aria-label="Scholarships and Skills" aria-controls="learn-grow" aria-selected="false" role="tab" tabindex="0">
                     <i class="fa-solid fa-graduation-cap"></i> Learn & Grow
                 </div>
-                <div class="main-tab" data-tab="hire-me">
+                <div class="main-tab" data-tab="hire-me" aria-label="Career Opportunities" aria-controls="hire-me" aria-selected="false" role="tab" tabindex="0">
                     <i class="fa-solid fa-briefcase"></i> Hire Me
                 </div>
             </div>
             <div class="global-search-container">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="global-search" placeholder="Search across all tabs (e.g. UPSC, AICTE, Google)...">
+                <input type="text" id="global-search" aria-label="Search across all modules" placeholder="Search across all tabs (e.g. UPSC, AICTE, Google)..." role="searchbox">
             </div>
             <div class="search-info-bar" id="search-info-bar">
                 <span id="search-info-text">No results found in this tab.</span>
@@ -97,10 +97,10 @@
         </div>
 
         <!-- Tab 1: Beyond Limits (Hall of Fame) -->
-        <section id="beyond-limits" class="tab-content active">
+        <section id="beyond-limits" class="tab-content active" role="tabpanel" aria-labelledby="tab-beyond-limits">
             <div class="container">
                 <div class="section-title">
-                    <h2>🏆 Beyond Limits</h2>
+                    <h2 id="tab-beyond-limits">🏆 Beyond Limits</h2>
                     <p>Indian Achievers with Disability — 2025–2026 Edition</p>
                 </div>
                 
@@ -126,10 +126,10 @@
         </section>
 
         <!-- Tab 2: Learn & Grow -->
-        <section id="learn-grow" class="tab-content">
+        <section id="learn-grow" class="tab-content" role="tabpanel" aria-labelledby="tab-learn-grow">
             <div class="container">
                 <div class="section-title">
-                    <h2>Scholarships & Resources</h2>
+                    <h2 id="tab-learn-grow">Scholarships & Resources</h2>
                     <p>Empowering special students with the tools to succeed.</p>
                 </div>
 
@@ -157,10 +157,10 @@
         </section>
 
         <!-- Tab 3: Hire Me -->
-        <section id="hire-me" class="tab-content">
+        <section id="hire-me" class="tab-content" role="tabpanel" aria-labelledby="tab-hire-me">
             <div class="container">
                 <div class="section-title">
-                    <h2>💼 Hire Me</h2>
+                    <h2 id="tab-hire-me">💼 Hire Me</h2>
                     <p>AI-Powered PwD Jobs, Government Quotas & Skill Schemes</p>
                 </div>
 
@@ -194,7 +194,7 @@
 
 
         <!-- Roadmap Section -->
-        <section id="roadmap">
+        <section id="roadmap" aria-label="Project Roadmap">
             <div class="container">
                 <div class="section-title">
                     <h2>Project Roadmap</h2>
@@ -208,7 +208,7 @@
     </main>
 
 
-    <footer style="padding: 4rem 0; background: var(--text-primary); color: white; text-align: center;">
+    <footer style="padding: 4rem 0; background: var(--text-primary); color: white; text-align: center;" role="contentinfo">
         <div class="container">
             <div class="logo" style="justify-content: center; margin-bottom: 1.5rem; color: white;">
                 <i class="fa-solid fa-bridge-circle-check"></i>
@@ -219,16 +219,16 @@
     </footer>
 
     <!-- Support Desk Toggle -->
-    <div id="support-toggle" title="Help Desk">
+    <div id="support-toggle" title="Help Desk" tabindex="0" aria-label="Open Help Desk" role="button">
         <i class="fa-solid fa-headset fa-xl"></i>
     </div>
 
     <!-- Support Modal -->
-    <div id="support-modal" class="modal">
+    <div id="support-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="support-modal-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2><i class="fa-solid fa-headset"></i> Support Desk</h2>
-                <button class="close-modal">&times;</button>
+                <h2 id="support-modal-title"><i class="fa-solid fa-headset"></i> Support Desk</h2>
+                <button class="close-modal" aria-label="Close Support Modal">&times;</button>
             </div>
             <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.875rem;">Submit a ticket to OneBridge Support. Our AI will route your request to the appropriate department.</p>
             
@@ -256,9 +256,37 @@
         </div>
     </div>
 
-    <!-- Accessibility Toggle -->
-    <div id="a11y-toggle" title="High Contrast Mode">
-        <i class="fa-solid fa-eye fa-xl"></i>
+
+    <!-- Accessibility Feedback Toggle -->
+    <div id="a11y-feedback-toggle" title="Accessibility Feedback" tabindex="0" aria-label="Report Accessibility Issue" role="button" style="position: fixed; right: 2rem; bottom: 11.5rem; background: #b45309;">
+        <i class="fa-solid fa-universal-access fa-xl"></i>
+    </div>
+
+    <!-- Accessibility Feedback Modal -->
+    <div id="a11y-feedback-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="a11y-feedback-title">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="a11y-feedback-title"><i class="fa-solid fa-universal-access"></i> Accessibility Feedback</h2>
+                <button class="close-modal" id="close-a11y-feedback" aria-label="Close Accessibility Feedback">&times;</button>
+            </div>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.875rem;">Help us improve accessibility! Describe any issue or suggestion below.</p>
+            <form id="a11y-feedback-form">
+                <div class="form-group">
+                    <label for="a11y-feedback-desc">Feedback</label>
+                    <textarea id="a11y-feedback-desc" rows="4" placeholder="Describe the accessibility issue or suggestion..." required></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem; background: #b45309;">Submit Feedback</button>
+            </form>
+            <div id="a11y-feedback-status" style="margin-top: 1.5rem; display: none;">
+                <div class="status-card">
+                    <div style="font-size: 2rem; margin-bottom: 1rem; color: #b45309;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h4>Feedback Submitted</h4>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">Thank you for helping us improve accessibility!</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Notification Toast -->

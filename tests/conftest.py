@@ -18,6 +18,7 @@ if PROJECT_ROOT not in sys.path:
 
 # Directory for test JSON data (isolated per test)
 TEST_DATA_DIR = os.path.join(PROJECT_ROOT, "tests", "test_data")
+os.environ["ONEBRIDGE_DATA_DIR"] = TEST_DATA_DIR
 
 def _reset_test_data():
     if os.path.exists(TEST_DATA_DIR):

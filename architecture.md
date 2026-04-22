@@ -1,4 +1,4 @@
-# Technical Architecture: PCCOE OneBridge (Phase 2 Update)
+# Technical Architecture: PCCOE OneBridge (Phase 3 - JSON-Only Update)
 
 ## 1. System Overview & Traffic Flow Blueprint
 
@@ -17,9 +17,9 @@ graph TD
 
     %% Main Backend
     subgraph PCCOE Secure Intranet [PCCOE Secure Internal Network]
-        Gateway[Python/Express API Gateway]
-        DB[(Core Relational Database)]
-        LocalAI[[Local NLP Agent - HuggingFace/Ollama]]
+        Gateway[Python FastAPI Gateway]
+        DB[(JSON Registry - Local Files)]
+        LocalAI[[Local NLP Agent - HuggingFace]]
     end
 
     %% External Systems
@@ -33,9 +33,9 @@ graph TD
     Admin -- HTTPS / WSS --> SPA
     
     SPA -- REST JSON --> Gateway
-    Gateway -- SQL/ORM --> DB
+    Gateway -- Thread-Safe I/O --> DB
     
-    Gateway -- Internal gRPC/REST --> LocalAI
+    Gateway -- Internal calls --> LocalAI
     Gateway -- HTTPS/TLS (Anonymized Data) --> OpenRouter
     OpenRouter --> Gemini
 ```
@@ -46,11 +46,14 @@ graph TD
 
 To ensure strict compliance with the **WCAG & Privacy PRD bounds (Phase 1)**, the network relies on air-gapped mentalities for EOC transactions:
 - **Rule 1:** The Frontend SPA NEVER possesses or has access to external API Keys.
-- **Rule 2:** The API Gateway acts as a strict sanitizer. All JSON payloads are stripped of `StudentID` strings and replaced with Hash UUIDs before transmission to the External Cloud.
+- **Rule 2:** The API Gateway acts as a strict sanitizer. All JSON payloads are stripped of PII and replaced with Hash UUIDs before transmission to the External Cloud.
 - **Backend API**: FastAPI (Python) for business logic and Local NLP.
-- **Backend-as-a-Service (BaaS)**: Supabase for Auth, PostgreSQL Database, and Storage.
-- **External AI**: Gemini 1.5 Pro via OpenRouter Gateway.
-- **Local AI**: Distil-BART mnli for privacy-first ticket routing. logic.
+- **Persistence Layer (Synchronized JSON Registry)**:
+    - The platform uses a 100% JSON-file-based architecture (`data/*.json`) for all data persistence.
+    - **Data Engine**: `json_db.py` thread-safe utility with file locking.
+    - **Validation**: Pydantic v2 Models (`database_schema.py`).
+    - **Isolation**: Each module (Tickets, Opportunities, Auth) maintains its own JSON registry.
+- **Local AI**: Distil-BART mnli for privacy-first ticket routing.
 
 ---
 
@@ -64,7 +67,7 @@ sequenceDiagram
     participant User as Student DOM
     participant API as API Gateway
     participant AI as Local NLP Agent
-    participant DB as SQLite/PostgreSQL
+    participant DB as JSON Registry
     
     User->>API: POST /api/v1/tickets {description: "Need wheel-chair access"}
     activate API
@@ -73,7 +76,7 @@ sequenceDiagram
     AI-->>API: Returns Category: "EOC_PHYSICAL_ACCESS", Priority: "URGENT"
     deactivate AI
     
-    API->>DB: INSERT Ticket WITH (Category, Priority)
+    API->>DB: INSERT JSON Record into tickets.json
     activate DB
     DB-->>API: 201 Created (TicketID: 8842)
     deactivate DB
@@ -113,4 +116,4 @@ sequenceDiagram
 
 ## 4. Accessibility Traffic
 The frontend dynamically polls the backend to track accessibility issues (e.g. Broken Elevators).
-If a facility manager flags a component, the database broadcasts an event. When a visually impaired user accesses the frontend SPA, the DOM automatically adjusts ARIA roles reading out real-time contingency blockers via the standard DOM API integrations.
+If a facility manager flags a component, the JSON registry broadcasts an event via the API. When a visually impaired user accesses the frontend SPA, the DOM automatically adjusts ARIA roles reading out real-time contingency blockers via the standard DOM API integrations.

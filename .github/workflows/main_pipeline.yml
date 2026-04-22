@@ -18,7 +18,6 @@ concurrency:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  DATABASE_URL: "sqlite:///tests/test_ci.db"
 
 jobs:
   # --- Quality Assurance Job ---
@@ -40,6 +39,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8 pytest
+
+      - name: Initialize JSON Registry
+        run: |
+          python -c "from database_schema import init_db; init_db()"
 
       - name: Python Lint (flake8)
         run: |

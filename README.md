@@ -24,8 +24,9 @@ Experience the platform immediately on GitHub Pages:
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: HTML5, Vanilla CSS3 (Custom Design System), JavaScript (ES6+)
-- **Backend**: Python (FastAPI), SQLAlchemy, Supabase (Auth/Database)
+- **Frontend**: Vanilla HTML5/CSS3/JS
+- **Backend**: Python (FastAPI), Pydantic v2 Models
+- **Persistence**: Synchronized JSON Registry (data/*.json)
 - **Deployment**: GitHub Actions & GitHub Pages (Static), Docker (Production)
 
 ## 📦 Getting Started
@@ -36,22 +37,26 @@ Simply open `index.html` in any modern browser or use a simple static server:
 python -m http.server 3000
 ```
 
-### Full Stack Setup (with Backend)
+### Full Stack Setup (Backend Mode)
 1. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-2. Run the FastAPI server:
+2. Initialize the JSON Registry:
+   ```bash
+   python -c "from database_schema import init_db; init_db()"
+   ```
+3. Run the FastAPI server:
    ```bash
    uvicorn main:app --reload --port 8000
    ```
-3. Access the frontend at `http://localhost:8000/index.html` (or via your static server).
+4. Access the platform at `http://localhost:8000/index.html`.
 
 ## 📄 Documentation
 
 - [Deployment Guide](DEPLOYMENT.md) — How to host on GitHub Pages or VPS.
 - [Architecture Overview](architecture.md) — System design and data flow.
-- [Database Schema](ERD.md) — Relationship diagram and entity details.
+- [Data Registry](ERD.md) — JSON specification and logical links.
 - [Governance & AI Policy](ai_governance.md) — Responsible AI and PII handling.
 
 ---

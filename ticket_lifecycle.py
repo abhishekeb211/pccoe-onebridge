@@ -1,7 +1,8 @@
 import logging
 from enum import Enum
 from datetime import datetime, timedelta, UTC
-from sqlalchemy.orm import Session
+from json_db import db
+from database_schema import SupportTicket, TicketStatus as DBTicketStatus
 
 # Phase 18 / 19 / 20: Ticket Smart Routing, State Lifecycle, and Escalation Mechanisms
 
@@ -20,10 +21,10 @@ class TicketEngine:
         self.SLA_DAYS_LIMIT = 3
     
     # Phase 19: Prevent arbitrary Logic leaps
-    def advance_status(self, current_status: TicketStatus, target_status: TicketStatus, ticket_obj=None, db: Session = None):
+    def advance_status(self, current_status: TicketStatus, target_status: TicketStatus, ticket_id: int = None):
         """
         State Machine validation guaranteeing strict linear processing.
-        Optionally persists state change to DB if ticket_obj and db are provided.
+        Optionally persists state change to JSON DB if ticket_id is provided.
         """
         valid_flows = {
             TicketStatus.SUBMITTED: [TicketStatus.UNDER_REVIEW, TicketStatus.ESCALATED],
@@ -40,47 +41,40 @@ class TicketEngine:
             
         logger.info(f"State Validated: {current_status.name} -> {target_status.name}")
 
-        # Persist to database if session provided
-        if ticket_obj is not None and db is not None:
-            from database_schema import TicketStatus as DBTicketStatus
-            db_status = DBTicketStatus[target_status.name]
-            ticket_obj.status = db_status
-            db.commit()
-            db.refresh(ticket_obj)
-            logger.info(f"Ticket #{ticket_obj.id} persisted with status {target_status.name}")
+        # Persist to JSON database if ID provided
+        if ticket_id is not None:
+            updated = db.update(SupportTicket, ticket_id, status=DBTicketStatus[target_status.name])
+            if updated:
+                logger.info(f"Ticket #{ticket_id} persisted with status {target_status.name}")
 
         return target_status
 
     # Phase 20: Escalation Auto-Job Scrubber
-    def audit_escalations(self, db: Session = None):
+    def audit_escalations(self):
         """
         Cron-like job function mapping internal database timers for NFR compliance.
         Flags SLA breaches automatically overriding standard local priority.
-        When db is provided, queries and updates tickets directly in Supabase.
+        Queries and updates tickets directly in JSON storage.
         """
         now = datetime.now(UTC)
         escalated_count = 0
 
-        if db is not None:
-            from database_schema import SupportTicket as DBTicket, TicketStatus as DBTicketStatus
-            open_tickets = db.query(DBTicket).filter(
-                DBTicket.status.notin_([DBTicketStatus.RESOLVED, DBTicketStatus.ESCALATED])
-            ).all()
-
-            for ticket in open_tickets:
+        open_tickets = db.get_all(SupportTicket)
+        # Filter for non-terminal, non-escalated states
+        non_terminal = [DBTicketStatus.SUBMITTED, DBTicketStatus.UNDER_REVIEW, DBTicketStatus.ACTION_REQUIRED]
+        
+        for ticket in open_tickets:
+            if ticket.status in non_terminal:
                 if ticket.created_at:
-                    # Handle comparison between aware 'now' and potentially naive 'created_at' (SQLite)
                     created_at = ticket.created_at
+                    # Ensure timezone awareness
                     if created_at.tzinfo is None:
                         created_at = created_at.replace(tzinfo=UTC)
                     
                     if (now - created_at).days >= self.SLA_DAYS_LIMIT:
                         logger.critical(f"SLA Breach Intercepted for Ticket #{ticket.id}. Bumping to Faculty Override.")
-                        ticket.status = DBTicketStatus.ESCALATED
+                        db.update(SupportTicket, ticket.id, status=DBTicketStatus.ESCALATED)
                         escalated_count += 1
-
-            if escalated_count > 0:
-                db.commit()
         
         return escalated_count
 

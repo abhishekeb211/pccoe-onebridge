@@ -15,7 +15,8 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from json_db import db
 from database_schema import (
     StudentProfile, Opportunity, SupportTicket, 
-    FacilityBooking, Notification, KnowledgeBaseArticle, KBCategory, TicketStatus
+    FacilityBooking, Notification, KnowledgeBaseArticle, KBCategory, 
+    TicketStatus, ChatConversation, ChatMessage
 )
 from auth import get_current_student
 from role_manager import RequireEOCAdmin, RequireFaculty, RequireStudent
@@ -379,7 +380,7 @@ async def dashboard_snapshot(
 
     upcoming_bookings = db.query(FacilityBooking).filter(
         FacilityBooking.student_id == student.id,
-        FacilityBooking.booking_time >= datetime.datetime.now(datetime.UTC),
+        FacilityBooking.booking_time >= datetime.datetime.now(datetime.timezone.utc),
     ).count()
 
     unread_notifs = db.query(Notification).filter(
@@ -497,7 +498,7 @@ async def send_chat_message(payload: ChatMessageRequest):
         conversation_id=payload.conversation_id,
         sender="student",
         content=payload.content,
-        created_at=datetime.datetime.now(datetime.UTC)
+        created_at=datetime.datetime.now(datetime.timezone.utc)
     )
     db.insert(student_msg)
 
@@ -541,7 +542,7 @@ async def send_chat_message(payload: ChatMessageRequest):
         sender="bot",
         content=bot_response_content,
         matched_kb_id=matched_id,
-        created_at=datetime.datetime.now(datetime.UTC)
+        created_at=datetime.datetime.now(datetime.timezone.utc)
     )
     db.insert(bot_msg)
 

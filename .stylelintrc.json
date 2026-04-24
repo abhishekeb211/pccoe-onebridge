@@ -16,13 +16,6 @@
     "no-duplicate-at-import-rules": null,
     "no-duplicate-selectors": null,
     "no-empty-source": null,
-    "no-extra-semicolons": null,
-    "no-invalid-double-slash-comments": null,
-    "property-no-unknown": null,
-    "selector-pseudo-class-no-unknown": null,
-    "selector-pseudo-element-no-unknown": null,
-    "selector-type-no-unknown": null,
-    "string-no-newline": null,
     "unit-no-unknown": null
   }
 }

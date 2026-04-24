@@ -20,9 +20,9 @@
 
     <!-- Background Mesh -->
     <div class="bg-mesh">
-        <div class="mesh-circle" style="width: 400px; height: 400px; background: #0ea5e9; top: -10%; right: -10%;"></div>
-        <div class="mesh-circle" style="width: 300px; height: 300px; background: #06b6d4; bottom: 10%; left: -5%;"></div>
-        <div class="mesh-circle" style="width: 500px; height: 500px; background: #38bdf8; top: 40%; left: 30%; opacity: 0.05;"></div>
+        <div class="mesh-circle mesh-circle-1"></div>
+        <div class="mesh-circle mesh-circle-2"></div>
+        <div class="mesh-circle mesh-circle-3"></div>
     </div>
 
     <header role="banner">
@@ -53,21 +53,21 @@
                     <path fill="var(--bg-secondary)" fill-opacity="0.5" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,149.3C672,149,768,203,864,213.3C960,224,1056,192,1152,165.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
                 </svg>
             </div>
-            <div class="container" style="position: relative; z-index: 2;">
-                <span class="badge motivational-float" style="display: inline-block;">Premium Excellence Ed.</span>
+            <div class="container hero-container">
+                <span class="badge motivational-float">Premium Excellence Ed.</span>
                 <h1 class="animate" id="hero-title">Empower Your Academic Journey</h1>
-                <p class="animate" style="animation-delay: 0.1s;">A state-of-the-art digital ecosystem built to lift barriers, foster inclusion, and unlock your true potential.</p>
+                <p class="animate delay-1">A state-of-the-art digital ecosystem built to lift barriers, foster inclusion, and unlock your true potential.</p>
                 
                 <!-- AI Daily Insight -->
-                <div id="daily-insight-container" class="animate" style="animation-delay: 0.15s;">
+                <div id="daily-insight-container" class="animate delay-15">
                     <div class="insight-capsule glass">
                         <i class="fa-solid fa-sparkles"></i>
                         <div id="daily-insight-text">Loading intelligence...</div>
                     </div>
                 </div>
 
-                <div class="animate" style="animation-delay: 0.2s;">
-                    <a href="#beyond-limits" class="btn btn-pulse" style="background: var(--accent-primary); color: white; padding: 1rem 2.5rem; border-radius: 99px; text-decoration: none; font-weight: 700;">Unlock Your Potential</a>
+                <div class="animate delay-2">
+                    <a href="#beyond-limits" class="btn btn-pulse btn-hero-primary">Unlock Your Potential</a>
                 </div>
             </div>
         </section>
@@ -92,7 +92,7 @@
             </div>
             <div class="search-info-bar" id="search-info-bar">
                 <span id="search-info-text">No results found in this tab.</span>
-                <div class="btn-switch" id="btn-switch-tab" style="padding: 0.5rem 1rem; background: var(--accent-primary); color: white; border-radius: 99px; font-size: 0.8rem; cursor: pointer; transition: var(--transition);">Switch Tab</div>
+                <div class="btn-switch btn-switch-utility" id="btn-switch-tab">Switch Tab</div>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
                     <!-- Dynamic achiever cards -->
                 </div>
 
-                <div class="section-title" style="margin-top: 5rem;">
+                <div class="section-title section-spacer">
                     <h2>Established Legends</h2>
                     <p>Pioneers who paved the way for inclusion and excellence.</p>
                 </div>
@@ -147,7 +147,7 @@
                     <div id="scholarships-feed" class="opportunity-grid"></div>
                 </div>
 
-                <div class="resource-section" style="margin-top: 5rem;">
+                <div class="resource-section section-spacer">
                     <h3>🛠️ Professional Skill Pathways</h3>
                     <div id="skills-grid" class="resource-grid">
                         <!-- Injected by JS -->
@@ -176,7 +176,7 @@
                     <div id="internships-feed" class="opportunity-grid"></div>
                 </div>
 
-                <div class="resource-section" style="margin-top: 5rem;" id="hire-alerts">
+                <div class="resource-section section-spacer" id="hire-alerts">
                     <h3>🏛️ Gov Career Alerts (2026 Batch)</h3>
                     <div class="resource-grid">
                         <div class="resource-card glass">
@@ -208,13 +208,13 @@
     </main>
 
 
-    <footer style="padding: 4rem 0; background: var(--text-primary); color: white; text-align: center;" role="contentinfo">
+    <footer class="footer-main" role="contentinfo">
         <div class="container">
-            <div class="logo" style="justify-content: center; margin-bottom: 1.5rem; color: white;">
+            <div class="logo footer-logo-container">
                 <i class="fa-solid fa-bridge-circle-check"></i>
-                <span style="font-family: 'Outfit'; font-size: 1.5rem;">OneBridge</span>
+                <span class="footer-logo-text">OneBridge</span>
             </div>
-            <p style="opacity: 0.6; font-size: 0.875rem;">© 2026 PCCOE OneBridge Platform. Built for Inclusion & Excellence.</p>
+            <p class="footer-copyright">© 2026 PCCOE OneBridge Platform. Built for Inclusion & Excellence.</p>
         </div>
     </footer>
 
@@ -232,17 +232,17 @@
             </div>
             
             <div id="chat-auth-view">
-                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.875rem;">Welcome to OneBridge Support. Please enter your PRN to start a session.</p>
+                <p class="modal-desc">Welcome to OneBridge Support. Please enter your PRN to start a session.</p>
                 <form id="chat-start-form">
                     <div class="form-group">
                         <label for="chat-student-prn">Student PRN</label>
                         <input type="text" id="chat-student-prn" placeholder="e.g. 103221XXX" required>
                     </div>
-                    <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Start Chat</button>
+                    <button type="submit" class="btn btn-full-width">Start Chat</button>
                 </form>
             </div>
 
-            <div id="chat-view" style="display: none; flex-direction: column; height: 450px;">
+            <div id="chat-view" class="chat-container-utility">
                 <div id="chat-messages" class="chat-messages-container">
                     <div class="msg bot-msg">
                         <div class="msg-content">Hello! I'm your OneBridge Assistant. How can I help you today?</div>
@@ -258,7 +258,7 @@
 
 
     <!-- Accessibility Feedback Toggle -->
-    <div id="a11y-feedback-toggle" title="Accessibility Feedback" tabindex="0" aria-label="Report Accessibility Issue" role="button" style="position: fixed; right: 2rem; bottom: 11.5rem; background: #b45309;">
+    <div id="a11y-feedback-toggle" title="Accessibility Feedback" tabindex="0" aria-label="Report Accessibility Issue" role="button" class="a11y-toggle-utility">
         <i class="fa-solid fa-universal-access fa-xl"></i>
     </div>
 
@@ -269,21 +269,21 @@
                 <h2 id="a11y-feedback-title"><i class="fa-solid fa-universal-access"></i> Accessibility Feedback</h2>
                 <button class="close-modal" id="close-a11y-feedback" aria-label="Close Accessibility Feedback">&times;</button>
             </div>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.875rem;">Help us improve accessibility! Describe any issue or suggestion below.</p>
+            <p class="modal-desc">Help us improve accessibility! Describe any issue or suggestion below.</p>
             <form id="a11y-feedback-form">
                 <div class="form-group">
                     <label for="a11y-feedback-desc">Feedback</label>
                     <textarea id="a11y-feedback-desc" rows="4" placeholder="Describe the accessibility issue or suggestion..." required></textarea>
                 </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem; background: #b45309;">Submit Feedback</button>
+                <button type="submit" class="btn btn-full-width btn-a11y">Submit Feedback</button>
             </form>
-            <div id="a11y-feedback-status" style="margin-top: 1.5rem; display: none;">
+            <div id="a11y-feedback-status" class="a11y-status-container">
                 <div class="status-card">
-                    <div style="font-size: 2rem; margin-bottom: 1rem; color: #b45309;">
+                    <div class="a11y-status-icon">
                         <i class="fa-solid fa-circle-check"></i>
                     </div>
                     <h4>Feedback Submitted</h4>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;">Thank you for helping us improve accessibility!</p>
+                    <p class="a11y-status-text">Thank you for helping us improve accessibility!</p>
                 </div>
             </div>
         </div>

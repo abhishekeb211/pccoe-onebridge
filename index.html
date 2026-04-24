@@ -219,38 +219,38 @@
     </footer>
 
     <!-- Support Desk Toggle -->
-    <div id="support-toggle" title="Help Desk" tabindex="0" aria-label="Open Help Desk" role="button">
+    <button id="support-toggle" title="Help Desk" aria-label="Open Help Desk">
         <i class="fa-solid fa-headset fa-xl"></i>
-    </div>
+    </button>
 
     <!-- Support Modal -->
     <div id="support-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="support-modal-title">
-        <div class="modal-content">
+        <div class="modal-content chat-modal">
             <div class="modal-header">
-                <h2 id="support-modal-title"><i class="fa-solid fa-headset"></i> Support Desk</h2>
+                <h2 id="support-modal-title"><i class="fa-solid fa-headset"></i> OneBridge Support</h2>
                 <button class="close-modal" aria-label="Close Support Modal">&times;</button>
             </div>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.875rem;">Submit a ticket to OneBridge Support. Our AI will route your request to the appropriate department.</p>
             
-            <form id="ticket-form">
-                <div class="form-group">
-                    <label for="student-prn">Student PRN</label>
-                    <input type="text" id="student-prn" placeholder="e.g. 103221XXX" required>
-                </div>
-                <div class="form-group">
-                    <label for="ticket-desc">Issue Description</label>
-                    <textarea id="ticket-desc" rows="4" placeholder="Describe your issue or request in detail..." required></textarea>
-                </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Submit Ticket</button>
-            </form>
-
-            <div id="ticket-status" style="margin-top: 1.5rem; display: none;">
-                <div class="status-card">
-                    <div id="status-icon" style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-primary);">
-                        <i class="fa-solid fa-circle-check"></i>
+            <div id="chat-auth-view">
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.875rem;">Welcome to OneBridge Support. Please enter your PRN to start a session.</p>
+                <form id="chat-start-form">
+                    <div class="form-group">
+                        <label for="chat-student-prn">Student PRN</label>
+                        <input type="text" id="chat-student-prn" placeholder="e.g. 103221XXX" required>
                     </div>
-                    <h4 id="status-title">Ticket Submitted</h4>
-                    <p id="status-msg" style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem;"></p>
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Start Chat</button>
+                </form>
+            </div>
+
+            <div id="chat-view" style="display: none; flex-direction: column; height: 450px;">
+                <div id="chat-messages" class="chat-messages-container">
+                    <div class="msg bot-msg">
+                        <div class="msg-content">Hello! I'm your OneBridge Assistant. How can I help you today?</div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type your question..." aria-label="Chat input">
+                    <button id="send-chat-msg" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
@@ -299,6 +299,6 @@
         <button id="close-toast">&times;</button>
     </div>
 
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>

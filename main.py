@@ -458,6 +458,104 @@ async def mark_notification_read(
     return {"id": notif.id, "is_read": True}
 
 
+# --- Phase 22: Local NLP Chatbot Endpoints ---
+
+
+class ChatStartRequest(BaseModel):
+    student_prn: str
+
+class ChatMessageRequest(BaseModel):
+    conversation_id: int
+    content: str
+
+@app.post("/api/v1/chat/start", tags=["Module B: Chatbot"])
+async def start_chat(payload: ChatStartRequest):
+    """Initializes a new chat conversation for a student."""
+    student = db.find_one(StudentProfile, prn=payload.student_prn)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    new_conv = ChatConversation(
+        id=0,
+        student_id=student.id,
+        is_active=True,
+        messages=[]
+    )
+    db.insert(new_conv)
+    return new_conv
+
+@app.post("/api/v1/chat/message", tags=["Module B: Chatbot"])
+async def send_chat_message(payload: ChatMessageRequest):
+    """Processes a student message using Local NLP and matches against KB."""
+    conv = db.get_by_id(ChatConversation, payload.conversation_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    # 1. Log Student Message
+    student_msg = ChatMessage(
+        id=0,
+        conversation_id=payload.conversation_id,
+        sender="student",
+        content=payload.content,
+        created_at=datetime.datetime.now(datetime.UTC)
+    )
+    db.insert(student_msg)
+
+    # 2. Local NLP Processing
+    kb_articles = db.get_all(KnowledgeBaseArticle)
+    matches = []
+    if local_agent:
+        matches = local_agent.match_kb_keywords(payload.content, kb_articles)
+        
+        # Check for distress (Phase 23)
+        distress = local_agent.detect_distress(payload.content)
+        if distress["distress_detected"]:
+            # Auto-escalate or flag
+            pass 
+
+    # 3. Formulate Bot Response
+    bot_response_content = ""
+    matched_id = None
+    
+    if matches:
+        score, best_article = matches[0]
+        if score >= 3: # High confidence match
+            bot_response_content = f"I found something that might help: **{best_article.title}**\n\n{best_article.content}"
+            matched_id = best_article.id
+        else:
+            bot_response_content = "I'm not entirely sure, but here are some related topics:\n" + \
+                                   "\n".join([f"- {a.title}" for s, a in matches[:3]])
+    
+    if not bot_response_content:
+        # Fallback to Smart Routing suggestion
+        routing = {"predicted_department": "General"}
+        if local_agent:
+            routing = local_agent.classify_ticket(payload.content)
+        
+        bot_response_content = f"I couldn't find a direct answer in my knowledge base. However, this seems related to **{routing['predicted_department']}**. Would you like me to open a formal ticket for you?"
+
+    # 4. Save Bot Message
+    bot_msg = ChatMessage(
+        id=0,
+        conversation_id=payload.conversation_id,
+        sender="bot",
+        content=bot_response_content,
+        matched_kb_id=matched_id,
+        created_at=datetime.datetime.now(datetime.UTC)
+    )
+    db.insert(bot_msg)
+
+    return bot_msg
+
+@app.get("/api/v1/chat/history/{conversation_id}", tags=["Module B: Chatbot"])
+async def get_chat_history(conversation_id: int):
+    """Retrieves message history for a conversation."""
+    messages = db.find_many(ChatMessage, conversation_id=conversation_id)
+    messages.sort(key=lambda x: x.created_at)
+    return messages
+
+
+
 # --- Phase 15/16: AI-Assisted Response Endpoints ---
 
 class AIAssistRequest(BaseModel):

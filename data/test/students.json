@@ -1,0 +1,11 @@
+[
+  {
+    "id": "test001",
+    "name": "Test Student",
+    "year": 2026,
+    "has_disability": true,
+    "disability_type": "visual",
+    "accessibility_requirements": ["screen_reader"],
+    "mock": true
+  }
+]

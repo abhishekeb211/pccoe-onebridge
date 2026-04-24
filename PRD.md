@@ -1,7 +1,7 @@
 # Business Requirements Document (PRD): PCCOE OneBridge
 
 ## 1. Project Vision
-To create a high-performance, accessible, and AI-driven student success platform for PCCOE, focusing on unified access to scholarships, career opportunities, and an intelligent grievance helpdesk.
+To create a high-performance, accessible, and AI-driven Student Success Platform for PCCOE, focusing on unified access to scholarships, career opportunities, and an intelligent grievance helpdesk. The system is designed to empower every Student, including those with disabilities and from disadvantaged backgrounds, ensuring equal opportunity and support throughout their academic journey.
 
 ## 2. Core Pillars
 - **Inclusivity & Accessibility**: Native-level support for students with disabilities and disadvantaged backgrounds.

@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "How to apply for Scholarships?",
+    "content": "To apply for scholarships, navigate to the 'Learn & Grow' tab. You will find a list of matched scholarships based on your profile. Click on 'Apply' to be redirected to the official portal (e.g., MahaDBT or National Scholarship Portal). Ensure your profile is up to date for better matching.",
+    "category": "Finance",
+    "tags": "scholarship, money, fees, mahadbt",
+    "is_published": true,
+    "created_at": "2026-01-20T10:00:00Z",
+    "updated_at": "2026-01-20T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "WiFi Connectivity Issues",
+    "content": "If you are unable to connect to the PCCOE Campus WiFi, ensure you are using your official student credentials. Reset your password at the IT Helpdesk if needed. If the signal is weak, please report the location (e.g., Reading Hall, Lab 302) via the Support Desk.",
+    "category": "IT",
+    "tags": "wifi, internet, login, network",
+    "is_published": true,
+    "created_at": "2026-01-21T11:30:00Z",
+    "updated_at": "2026-01-21T11:30:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Equal Opportunity Cell (EOC) Services",
+    "content": "The EOC provides specialized support for students with disabilities, including scribe arrangements for exams, assistive technology access, and confidential grievance handling. Visit the EOC office in the Main Building, Ground Floor, or use the 'Secure Grievance' feature in the Support Desk.",
+    "category": "EOC",
+    "tags": "eoc, disability, grievance, support, scribe",
+    "is_published": true,
+    "created_at": "2026-01-22T09:15:00Z",
+    "updated_at": "2026-01-22T09:15:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Exam Schedule & Hall Tickets",
+    "content": "Exam schedules and hall tickets are released via the ERP portal and official departmental notice boards. For autonomous batch queries, contact the Controller of Examinations (CoE) office. Ensure your attendance is above 75% to be eligible.",
+    "category": "Academic",
+    "tags": "exam, test, schedule, hall ticket, attendance",
+    "is_published": true,
+    "created_at": "2026-01-23T14:00:00Z",
+    "updated_at": "2026-01-23T14:00:00Z"
+  }
+]

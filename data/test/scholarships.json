@@ -1,0 +1,10 @@
+[
+  {
+    "id": "sch_test_001",
+    "name": "Mock Scholarship",
+    "provider": "Test Foundation",
+    "eligibility": "Open to all test students",
+    "year": 2026,
+    "mock": true
+  }
+]

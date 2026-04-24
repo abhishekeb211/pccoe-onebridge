@@ -4,7 +4,8 @@ import datetime
 import json
 import os
 import time
-from typing import List, Optional
+from typing import List, Optional, Any
+Session = Any
 
 import sentry_sdk
 from fastapi import Depends, FastAPI, HTTPException, Query, Request

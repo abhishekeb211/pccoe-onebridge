@@ -26,8 +26,8 @@ CACHE_DIR.mkdir(exist_ok=True)
 SCHOLARSHIP_CACHE = CACHE_DIR / "scholarships.json"
 INTERNSHIP_CACHE = CACHE_DIR / "internships.json"
 STATUS_FILE = CACHE_DIR / "scrape_status.json"
-SEED_SCHOLARSHIPS = CACHE_DIR / "seed_scholarships.json"
-SEED_INTERNSHIPS = CACHE_DIR / "seed_internships.json"
+SEED_SCHOLARSHIPS = BASE_DIR / "data" / "seed_scholarships.json"
+SEED_INTERNSHIPS = BASE_DIR / "data" / "seed_internships.json"
 
 CACHE_MAX_AGE_HOURS = int(os.getenv("SCRAPE_INTERVAL_HOURS", "24"))
 
